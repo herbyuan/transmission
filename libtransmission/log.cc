@@ -22,6 +22,8 @@
 #include <fmt/chrono.h>
 #include <fmt/core.h>
 
+#include <small/map.hpp>
+
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
 #include "libtransmission/tr-assert.h"
@@ -251,8 +253,9 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
     if (level == TR_LOG_CRITICAL || level == TR_LOG_ERROR || level == TR_LOG_WARN)
     {
         static auto constexpr MaxRepeat = size_t{ 30 };
-        static auto counts = new std::map<std::pair<std::string_view, int>, size_t>{};
+        static auto counts = new small::map<std::pair<std::string_view, int>, size_t>{};
 
+        fmt::print("std::size(*counts) is {:d}\n", std::size(*counts));
         auto& count = (*counts)[std::make_pair(filename, line)];
         ++count;
         last_one = count == MaxRepeat;
