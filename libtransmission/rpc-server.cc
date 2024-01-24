@@ -643,6 +643,71 @@ bool bindUnixSocket(
 #endif
 }
 
+int tr_evhttp_bind_socket(struct evhttp* httpd, char const* address, ev_uint16_t port)
+{
+#ifdef _WIN32
+    WORD wVersionRequested;
+    WSADATA wsaData;
+    wVersionRequested = MAKEWORD(2, 2);
+    if (WSAStartup(wVersionRequested, &wsaData) != 0)
+        return evhttp_bind_socket(httpd, address, port);
+    struct addrinfo* result = NULL;
+    struct addrinfo hints;
+    ZeroMemory(&hints, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_PASSIVE;
+
+    if (getaddrinfo(address, std::to_string(port).c_str(), &hints, &result) != 0)
+    {
+        WSACleanup();
+        return evhttp_bind_socket(httpd, address, port);
+    }
+
+    int fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    if (fd == INVALID_SOCKET)
+    {
+        freeaddrinfo(result);
+        WSACleanup();
+        return evhttp_bind_socket(httpd, address, port);
+    }
+    evutil_make_socket_nonblocking(fd);
+    evutil_make_listen_socket_reuseable(fd);
+
+    // Making dual stack
+    if (result->ai_family == AF_INET6)
+    {
+        int off = 0;
+        setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (char*)&off, (ev_socklen_t)sizeof(off));
+    }
+    // Set keep alive
+    int on = 1;
+    setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&on, sizeof(on));
+    if (bind(fd, result->ai_addr, result->ai_addrlen) != 0)
+    {
+        freeaddrinfo(result);
+        closesocket(fd);
+        WSACleanup();
+        return evhttp_bind_socket(httpd, address, port);
+    }
+    freeaddrinfo(result);
+    if (listen(fd, 128) == -1)
+    {
+        closesocket(fd);
+        WSACleanup();
+        return evhttp_bind_socket(httpd, address, port);
+    }
+    if (evhttp_accept_socket(httpd, fd) == 0)
+        return 0;
+
+    // fallback to evhttp_bind_socket
+    closesocket(fd);
+    WSACleanup();
+#endif
+    return evhttp_bind_socket(httpd, address, port);
+}
+
 void startServer(tr_rpc_server* server);
 
 auto rpc_server_start_retry(tr_rpc_server* server)
@@ -681,9 +746,10 @@ void startServer(tr_rpc_server* server)
 
     bool const success = server->bind_address_->type == TR_RPC_AF_UNIX ?
         bindUnixSocket(base, httpd, address.c_str(), server->socket_mode_) :
-        (evhttp_bind_socket(httpd, address.c_str(), port.host()) != -1);
+        (tr_evhttp_bind_socket(httpd, address.c_str(), port.host()) != -1);
 
     auto const addr_port_str = tr_rpc_address_with_port(server);
+    tr_logAddInfo(fmt::format(FMT_STRING("RPC listen address is '{:s}'"), addr_port_str));
 
     if (!success)
     {
@@ -709,7 +775,6 @@ void startServer(tr_rpc_server* server)
     {
         evhttp_set_gencb(httpd, handle_request, server);
         server->httpd.reset(httpd);
-
         tr_logAddInfo(fmt::format(_("Listening for RPC and Web requests on '{address}'"), fmt::arg("address", addr_port_str)));
     }
 
