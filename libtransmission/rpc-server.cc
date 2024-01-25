@@ -646,13 +646,13 @@ bool bindUnixSocket(
 int tr_evhttp_bind_socket(struct evhttp* httpd, char const* address, ev_uint16_t port)
 {
 #ifdef _WIN32
-    WORD wVersionRequested;
-    WSADATA wsaData;
-    wVersionRequested = MAKEWORD(2, 2);
-    if (WSAStartup(wVersionRequested, &wsaData) != 0)
-    {
-        return evhttp_bind_socket(httpd, address, port);
-    }
+    // WORD wVersionRequested;
+    // WSADATA wsaData;
+    // wVersionRequested = MAKEWORD(2, 2);
+    // if (WSAStartup(wVersionRequested, &wsaData) != 0)
+    // {
+    //     return evhttp_bind_socket(httpd, address, port);
+    // }
     struct addrinfo* result = NULL;
     struct addrinfo hints;
     ZeroMemory(&hints, sizeof(hints));
@@ -700,7 +700,7 @@ CLEANUP_SOCKET:
     closesocket(fd);
 CLEANUP_AND_FALLBACK:
     // clean up WSA and fallback to evhttp_bind_socket
-    WSACleanup();
+    // WSACleanup();
 #endif
     return evhttp_bind_socket(httpd, address, port);
 }
