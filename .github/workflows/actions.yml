@@ -451,7 +451,7 @@ jobs:
           cmake --build obj --config RelWithDebInfo
       - name: Show folder struct again
         run: |
-          tree ./obj
+          tree ./
       - name: Test
         if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
         run: cmake -E chdir obj ctest -j $(nproc) --build-config RelWithDebInfo --output-on-failure --timeout 600

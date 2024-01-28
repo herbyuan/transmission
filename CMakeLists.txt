@@ -50,6 +50,7 @@ tr_auto_option(REBUILD_WEB "Rebuild the web client's generated assets. Requires 
 option(INSTALL_WEB "Install the web client's generated assets." ON)
 option(ENABLE_UTILS "Build utils (create, edit, show)" ON)
 option(ENABLE_CLI "Build command-line client" OFF)
+option(ENABLE_SSLTEST "Build command-line client" ON)
 option(ENABLE_TESTS "Build unit tests" ON)
 option(ENABLE_UTP "Build µTP support" ON)
 option(ENABLE_WERROR "Treat warnings as errors" OFF)

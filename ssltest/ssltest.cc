@@ -7,8 +7,8 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-#define HTTP_CERT_PEM "D:/cert/cert.pem"
-#define HTTP_KEY_PEM "D:/cert/key.pem"
+#define HTTP_CERT_PEM "D:\\A\\TRANSMISSION\\TRANSMISSION\\src\\cert\\cert.pem"
+#define HTTP_KEY_PEM "D:\\A\\TRANSMISSION\\TRANSMISSION\\src\\cert\\key.pem"
 
 int main()
 {
