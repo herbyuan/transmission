@@ -782,7 +782,7 @@ if(ENABLE_GTK AND ENABLE_NLS)
     add_subdirectory(po)
 endif()
 
-foreach(P cli daemon gtk mac qt utils)
+foreach(P ssltest cli daemon gtk mac qt utils)
     string(TOUPPER "${P}" P_ID)
     if(ENABLE_${P_ID})
         if(DEFINED ${P_ID}_PROJECT_DIR)
