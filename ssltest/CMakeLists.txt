@@ -6,28 +6,7 @@ target_sources(${TR_NAME}-ssltest
 
 target_link_libraries(${TR_NAME}-ssltest
     PRIVATE
-        Threads::Threads
-        deflate::deflate
         transmission::crypto_impl
-        CURL::libcurl
-        FastFloat::fast_float
-        psl::psl
-        natpmp::natpmp
-        miniupnpc::libminiupnpc
-        dht::dht
-        libutp::libutp
-        libb64::libb64
-        ${LIBINTL_LIBRARY}
-        ${LIBM_LIBRARY}
-        ${LIBQUOTA_LIBRARY}
-        ${TR_NETWORK_LIBRARIES}
-        jsonsl
-        utf8::cpp
-        wildmat
-        WideInteger::WideInteger
-        $<$<BOOL:${WIN32}>:crypt32>
-        $<$<BOOL:${WIN32}>:shlwapi>
-        "$<$<BOOL:${APPLE}>:-framework Foundation>"
     PUBLIC
         fmt::fmt-header-only
         libevent::event)
