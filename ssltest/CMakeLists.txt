@@ -4,7 +4,7 @@ target_sources(${TR_NAME}-ssltest
     PRIVATE
         ssltest.cc)
 
-target_link_libraries(${TR_NAME}-daemon
+target_link_libraries(${TR_NAME}-ssltest
     PRIVATE
         ${TR_NAME}
         libevent::event
