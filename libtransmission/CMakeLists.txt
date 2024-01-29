@@ -303,7 +303,8 @@ target_link_libraries(${TR_NAME}
     PUBLIC
         fmt::fmt-header-only
         small::small
-        libevent::event)
+        libevent::event
+        libevent::event_openssl)
 
 if(INSTALL_LIB)
     install(
