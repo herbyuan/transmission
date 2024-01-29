@@ -111,67 +111,67 @@ jobs:
           echo "When CI is done, the above patch will be uploaded as 'code-style.diff' to https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/ ."
           exit 1
 
-  # sanitizer-tests:
-  #   runs-on: ubuntu-22.04
-  #   needs: [ what-to-make ]
-  #   if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
-  #   env:
-  #     NODE_PATH: /usr/lib/nodejs:/usr/share/nodejs
-  #   steps:
-  #     - name: Show Configuration
-  #       run: |
-  #         echo '${{ toJSON(needs) }}'
-  #         echo '${{ toJSON(runner) }}'
-  #         cat /etc/os-release
-  #     - name: Get Dependencies
-  #       run: |
-  #         set -ex
-  #         sudo apt-get update
-  #         sudo apt-get install -y --no-install-recommends \
-  #           ca-certificates \
-  #           clang \
-  #           cmake \
-  #           gettext \
-  #           libcurl4-openssl-dev \
-  #           libdeflate-dev \
-  #           libevent-dev \
-  #           libfmt-dev \
-  #           libminiupnpc-dev \
-  #           libnatpmp-dev \
-  #           libpsl-dev \
-  #           libssl-dev \
-  #           ninja-build \
-  #           npm
-  #     - name: Get Source
-  #       uses: actions/checkout@v3
-  #       with:
-  #         submodules: recursive
-  #         path: src
-  #     - name: Configure
-  #       run: |
-  #         cmake \
-  #           -S src \
-  #           -B obj \
-  #           -G Ninja \
-  #           -DCMAKE_BUILD_TYPE=Debug \
-  #           -DCMAKE_CXX_COMPILER='clang++' \
-  #           -DCMAKE_CXX_FLAGS='-gdwarf-4 -fno-omit-frame-pointer -fsanitize=address,leak,undefined' \
-  #           -DCMAKE_C_COMPILER='clang' \
-  #           -DCMAKE_C_FLAGS='-gdwarf-4 -fno-omit-frame-pointer -fsanitize=address,leak,undefined' \
-  #           -DCMAKE_INSTALL_PREFIX=pfx \
-  #           -DENABLE_CLI=OFF \
-  #           -DENABLE_DAEMON=OFF \
-  #           -DENABLE_GTK=OFF \
-  #           -DENABLE_MAC=OFF \
-  #           -DENABLE_QT=OFF \
-  #           -DENABLE_TESTS=ON \
-  #           -DENABLE_UTILS=ON \
-  #           -DENABLE_WEB=OFF \
-  #           -DRUN_CLANG_TIDY=OFF
-  #     - name: Make
-  #       run: cmake --build obj --config Debug --target libtransmission-test transmission-show
-  #     - name: Test with sanitizers
-  #       run: cmake -E chdir obj ctest -j $(nproc) --build-config Debug --output-on-failure
+  sanitizer-tests:
+    runs-on: ubuntu-22.04
+    needs: [ what-to-make ]
+    if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
+    env:
+      NODE_PATH: /usr/lib/nodejs:/usr/share/nodejs
+    steps:
+      - name: Show Configuration
+        run: |
+          echo '${{ toJSON(needs) }}'
+          echo '${{ toJSON(runner) }}'
+          cat /etc/os-release
+      - name: Get Dependencies
+        run: |
+          set -ex
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ca-certificates \
+            clang \
+            cmake \
+            gettext \
+            libcurl4-openssl-dev \
+            libdeflate-dev \
+            libevent-dev \
+            libfmt-dev \
+            libminiupnpc-dev \
+            libnatpmp-dev \
+            libpsl-dev \
+            libssl-dev \
+            ninja-build \
+            npm
+      - name: Get Source
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          path: src
+      - name: Configure
+        run: |
+          cmake \
+            -S src \
+            -B obj \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER='clang++' \
+            -DCMAKE_CXX_FLAGS='-gdwarf-4 -fno-omit-frame-pointer -fsanitize=address,leak,undefined' \
+            -DCMAKE_C_COMPILER='clang' \
+            -DCMAKE_C_FLAGS='-gdwarf-4 -fno-omit-frame-pointer -fsanitize=address,leak,undefined' \
+            -DCMAKE_INSTALL_PREFIX=pfx \
+            -DENABLE_CLI=OFF \
+            -DENABLE_DAEMON=OFF \
+            -DENABLE_GTK=OFF \
+            -DENABLE_MAC=OFF \
+            -DENABLE_QT=OFF \
+            -DENABLE_TESTS=ON \
+            -DENABLE_UTILS=ON \
+            -DENABLE_WEB=OFF \
+            -DRUN_CLANG_TIDY=OFF
+      - name: Make
+        run: cmake --build obj --config Debug --target libtransmission-test transmission-show
+      - name: Test with sanitizers
+        run: cmake -E chdir obj ctest -j $(nproc) --build-config Debug --output-on-failure
 
   clang-tidy-libtransmission:
     runs-on: ubuntu-22.04
@@ -218,7 +218,8 @@ jobs:
             -DCMAKE_CXX_COMPILER='clang++' \
             -DCMAKE_C_COMPILER='clang' \
             -DCMAKE_INSTALL_PREFIX=pfx \
-            -DRUN_CLANG_TIDY=ON
+            -DRUN_CLANG_TIDY=ON \
+            -DWITH_CRYPTO=openssl
       - name: Make
         run: cmake --build obj --config Debug --target libtransmission.a 2>&1 | tee makelog
       - name: Test for warnings
@@ -269,6 +270,7 @@ jobs:
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WERROR=ON \
+            -DWITH_CRYPTO=openssl \
             -DRUN_CLANG_TIDY=OFF
       - name: Make
         run: cmake --build obj --config RelWithDebInfo
@@ -345,6 +347,7 @@ jobs:
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WERROR=ON \
+            -DWITH_CRYPTO=openssl \
             -DRUN_CLANG_TIDY=OFF
       - name: Make
         run: cmake --build obj --config RelWithDebInfo
@@ -437,6 +440,7 @@ jobs:
             -DENABLE_UTILS=ON `
             -DENABLE_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} `
             -DENABLE_WERROR=ON `
+            -DWITH_CRYPTO=openssl `
             -DRUN_CLANG_TIDY=OFF
       - name: Make
         run: |
@@ -552,6 +556,7 @@ jobs:
             -DUSE_SYSTEM_NATPMP=OFF \
             -DUSE_SYSTEM_UTP=OFF \
             -DUSE_SYSTEM_B64=OFF \
+            -DWITH_CRYPTO=openssl \
             -DUSE_SYSTEM_PSL=OFF
       - name: Make
         run: cmake --build obj --config RelWithDebInfo
@@ -631,6 +636,7 @@ jobs:
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WERROR=ON \
+            -DWITH_CRYPTO=openssl \
             -DRUN_CLANG_TIDY=OFF
       - name: Build
         run: cmake --build obj --config RelWithDebInfo
@@ -708,6 +714,7 @@ jobs:
             -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_DEPRECATED=ON \
             -DENABLE_WERROR=OFF \
+            -DWITH_CRYPTO=openssl \
             -DRUN_CLANG_TIDY=OFF
       - name: Build
         run: cmake --build obj --config RelWithDebInfo
@@ -781,6 +788,7 @@ jobs:
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WERROR=ON \
+            -DWITH_CRYPTO=openssl \
             -DRUN_CLANG_TIDY=OFF
       - name: Make
         run: cmake --build obj --config RelWithDebInfo

@@ -296,7 +296,8 @@ target_link_libraries(${TR_NAME}
         "$<$<BOOL:${APPLE}>:-framework Foundation>"
     PUBLIC
         fmt::fmt-header-only
-        libevent::event)
+        libevent::event
+        libevent::event_openssl)
 
 if(INSTALL_LIB)
     install(
