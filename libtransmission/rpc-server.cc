@@ -28,14 +28,13 @@
 #include <event2/http.h>
 #include <event2/http_struct.h> /* TODO: eventually remove this */
 #include <event2/listener.h>
+#include <event2/bufferevent_ssl.h>
 
 #include <iostream>
 #include <fstream>
 #include <evhttp.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-
-#include <event2/bufferevent_ssl.h>
 
 #include <fmt/core.h>
 #include <fmt/chrono.h>

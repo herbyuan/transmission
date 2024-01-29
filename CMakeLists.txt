@@ -233,6 +233,8 @@ find_package(PkgConfig QUIET)
 
 find_package(CURL ${CURL_MINIMUM} REQUIRED)
 
+find_package(OpenSSL ${OPENSSL_MINIMUM} REQUIRED)
+
 if(ENABLE_DEPRECATED STREQUAL "AUTO")
     if(DEFINED ENV{CI})
         set(ENABLE_DEPRECATED OFF)

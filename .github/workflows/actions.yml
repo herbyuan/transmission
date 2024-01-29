@@ -1,8 +1,6 @@
 name: Sanity
 on:
   push:
-    branches:
-      - 'main'
   pull_request:
     branches:
       - 'main'
@@ -272,7 +270,8 @@ jobs:
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
             -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WERROR=ON \
-            -DRUN_CLANG_TIDY=OFF
+            -DRUN_CLANG_TIDY=OFF \
+            -DWITH_CRYPTO=openssl
       - name: Make
         run: cmake --build obj --config RelWithDebInfo
       - name: Test
@@ -553,7 +552,8 @@ jobs:
             -DUSE_SYSTEM_NATPMP=OFF \
             -DUSE_SYSTEM_UTP=OFF \
             -DUSE_SYSTEM_B64=OFF \
-            -DUSE_SYSTEM_PSL=OFF
+            -DUSE_SYSTEM_PSL=OFF \
+            -DWITH_CRYPTO=openssl
       - name: Make
         run: cmake --build obj --config RelWithDebInfo
       - name: Test
