@@ -34,6 +34,7 @@ target_link_libraries(${TR_NAME}-daemon
     PRIVATE
         ${TR_NAME}
         libevent::event
+        libevent::event_openssl
         fmt::fmt-header-only
         $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>)
 
