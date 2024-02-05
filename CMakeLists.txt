@@ -468,23 +468,35 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
         -DLIBDEFLATE_BUILD_SHARED_LIB=OFF
         -DLIBDEFLATE_BUILD_GZIP=OFF)
 
-tr_add_external_auto_library(EVENT2 libevent event
-    TARGET libevent::event
-    CMAKE_ARGS
-        -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-        -DEVENT__DISABLE_TESTS:BOOL=ON
-        -DEVENT__DISABLE_REGRESS:BOOL=ON
-        -DEVENT__DISABLE_SAMPLES:BOOL=ON
-        -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+if(CRYPTO_PKG STREQUAL "openssl")
+    tr_add_external_auto_library(EVENT2 libevent event
+        TARGET libevent::event
+        CMAKE_ARGS
+            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+            -DEVENT__DISABLE_TESTS:BOOL=ON
+            -DEVENT__DISABLE_REGRESS:BOOL=ON
+            -DEVENT__DISABLE_SAMPLES:BOOL=ON
+            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 
-tr_add_external_auto_library(EVENT2SSL libevent event_openssl
-    TARGET libevent::event_openssl
-    CMAKE_ARGS
-        -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-        -DEVENT__DISABLE_TESTS:BOOL=ON
-        -DEVENT__DISABLE_REGRESS:BOOL=ON
-        -DEVENT__DISABLE_SAMPLES:BOOL=ON
-        -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+    tr_add_external_auto_library(EVENT2SSL libevent event_openssl
+        TARGET libevent::event_openssl
+        CMAKE_ARGS
+            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+            -DEVENT__DISABLE_TESTS:BOOL=ON
+            -DEVENT__DISABLE_REGRESS:BOOL=ON
+            -DEVENT__DISABLE_SAMPLES:BOOL=ON
+            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+else
+    tr_add_external_auto_library(EVENT2 libevent event
+        TARGET libevent::event
+        CMAKE_ARGS
+            -DEVENT__DISABLE_OPENSSL:BOOL=ON
+            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+            -DEVENT__DISABLE_TESTS:BOOL=ON
+            -DEVENT__DISABLE_REGRESS:BOOL=ON
+            -DEVENT__DISABLE_SAMPLES:BOOL=ON
+            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+endif()
 
 tr_add_external_auto_library(NATPMP libnatpmp natpmp
     TARGET natpmp::natpmp)
