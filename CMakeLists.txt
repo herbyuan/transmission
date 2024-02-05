@@ -15,6 +15,10 @@ if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
         FORCE)
 endif()
 
+if(APPLE)
+    add_compile_definitions(BUILD_MAC_CLIENT)
+endif()
+
 project(transmission)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
