@@ -24,7 +24,7 @@
 #include <unistd.h> /* getuid() */
 #endif
 
-#ifdef __APPLE__
+#ifdef BUILD_MAC_CLIENT
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
@@ -163,7 +163,7 @@ std::string tr_getDefaultConfigDir(std::string_view appname)
         return dir;
     }
 
-#ifdef __APPLE__
+#ifdef BUILD_MAC_CLIENT
 
     return fmt::format("{:s}/Library/Application Support/{:s}"sv, getHomeDir(), appname);
 
@@ -230,7 +230,7 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
         return dir;
     }
 
-#ifdef __APPLE__
+#ifdef BUILD_MAC_CLIENT
 
     // look in the Application Support folder
     if (auto path = tr_pathbuf{ session->configDir(), "/public_html"sv }; isWebClientDir(path))
