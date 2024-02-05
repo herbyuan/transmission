@@ -5,13 +5,22 @@ foreach(P create edit remote show)
         PRIVATE
             ${P}.cc)
 
-    target_link_libraries(${TR_NAME}-${P}
-        PRIVATE
-            ${TR_NAME}
-            CURL::libcurl
-            fmt::fmt-header-only
-            libevent::event
-            libevent::event_openssl)
+    if(CRYPTO_PKG STREQUAL "openssl")
+        target_link_libraries(${TR_NAME}-${P}
+            PRIVATE
+                ${TR_NAME}
+                CURL::libcurl
+                fmt::fmt-header-only
+                libevent::event
+                libevent::event_openssl)
+    else()
+        target_link_libraries(${TR_NAME}-${P}
+            PRIVATE
+                ${TR_NAME}
+                CURL::libcurl
+                fmt::fmt-header-only
+                libevent::event)
+    endif()
 
     tr_win32_app_info(${TR_NAME}-${P}
         "Transmission Utility ('${P}')"

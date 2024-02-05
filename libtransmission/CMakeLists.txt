@@ -275,36 +275,64 @@ if(ANDROID)
     find_library(log-lib log)
 endif()
 
-target_link_libraries(${TR_NAME}
-    PRIVATE
-        Threads::Threads
-        deflate::deflate
-        transmission::crypto_impl
-        CURL::libcurl
-        FastFloat::fast_float
-        psl::psl
-        natpmp::natpmp
-        miniupnpc::libminiupnpc
-        dht::dht
-        libutp::libutp
-        libb64::libb64
-        ${LIBINTL_LIBRARY}
-        ${LIBM_LIBRARY}
-        ${LIBQUOTA_LIBRARY}
-        ${TR_NETWORK_LIBRARIES}
-        RapidJSON
-        utf8::cpp
-        wildmat
-        WideInteger::WideInteger
-        $<$<BOOL:${WIN32}>:crypt32>
-        $<$<BOOL:${WIN32}>:shlwapi>
-        "$<$<BOOL:${APPLE}>:-framework Foundation>"
-        "$<$<BOOL:${ANDROID}>:${log-lib}>"
-    PUBLIC
-        fmt::fmt-header-only
-        small::small
-        libevent::event
-        libevent::event_openssl)
+if(CRYPTO_PKG STREQUAL "openssl")
+    target_link_libraries(${TR_NAME}
+        PRIVATE
+            Threads::Threads
+            deflate::deflate
+            transmission::crypto_impl
+            CURL::libcurl
+            FastFloat::fast_float
+            psl::psl
+            natpmp::natpmp
+            miniupnpc::libminiupnpc
+            dht::dht
+            libutp::libutp
+            libb64::libb64
+            ${LIBINTL_LIBRARY}
+            ${LIBM_LIBRARY}
+            ${LIBQUOTA_LIBRARY}
+            ${TR_NETWORK_LIBRARIES}
+            jsonsl
+            utf8::cpp
+            wildmat
+            WideInteger::WideInteger
+            $<$<BOOL:${WIN32}>:crypt32>
+            $<$<BOOL:${WIN32}>:shlwapi>
+            "$<$<BOOL:${APPLE}>:-framework Foundation>"
+        PUBLIC
+            fmt::fmt-header-only
+            libevent::event
+            libevent::event_openssl)
+else()
+    target_link_libraries(${TR_NAME}
+        PRIVATE
+            Threads::Threads
+            deflate::deflate
+            transmission::crypto_impl
+            CURL::libcurl
+            FastFloat::fast_float
+            psl::psl
+            natpmp::natpmp
+            miniupnpc::libminiupnpc
+            dht::dht
+            libutp::libutp
+            libb64::libb64
+            ${LIBINTL_LIBRARY}
+            ${LIBM_LIBRARY}
+            ${LIBQUOTA_LIBRARY}
+            ${TR_NETWORK_LIBRARIES}
+            jsonsl
+            utf8::cpp
+            wildmat
+            WideInteger::WideInteger
+            $<$<BOOL:${WIN32}>:crypt32>
+            $<$<BOOL:${WIN32}>:shlwapi>
+            "$<$<BOOL:${APPLE}>:-framework Foundation>"
+        PUBLIC
+            fmt::fmt-header-only
+            libevent::event)
+endif()
 
 if(INSTALL_LIB)
     install(

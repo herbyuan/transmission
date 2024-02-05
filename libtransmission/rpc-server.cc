@@ -32,10 +32,6 @@
 #include <iostream>
 #include <fstream>
 #include <evhttp.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-
-#include <event2/bufferevent_ssl.h>
 
 #include <fmt/core.h>
 #include <fmt/chrono.h>
@@ -58,6 +54,10 @@
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"
+
+#ifdef WITH_OPENSSL
+#include <event2/bufferevent_ssl.h>
+#endif
 
 struct evbuffer;
 
@@ -651,6 +651,7 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
     server->start_retry_counter = 0;
 }
 
+#ifdef WITH_OPENSSL
 struct bufferevent* bevcb(struct event_base* base, void* arg)
 {
     struct bufferevent* r = nullptr;
@@ -848,6 +849,7 @@ SSL_CTX* tr_set_cert(char const* cert, char const* key)
     }
     return nullptr;
 }
+#endif
 
 void start_server(tr_rpc_server* server)
 {
@@ -864,6 +866,7 @@ void start_server(tr_rpc_server* server)
     auto const address = server->get_bind_address();
     auto const port = server->port();
 
+#ifdef WITH_OPENSSL
     SSL_CTX* m_ctx = nullptr;
     if (server->issslEnabled())
     {
@@ -873,6 +876,7 @@ void start_server(tr_rpc_server* server)
             tr_logAddWarn(fmt::format("Couldn't set RPC SSL certs"));
         }
     }
+#endif
 
     bool const success = server->bind_address_->is_unix_addr() ?
         bindUnixSocket(base, httpd, address.c_str(), server->socket_mode_) :
@@ -902,10 +906,12 @@ void start_server(tr_rpc_server* server)
     }
     else
     {
+#ifdef WITH_OPENSSL
         if (m_ctx != nullptr)
         {
             evhttp_set_bevcb(httpd, bevcb, m_ctx);
         }
+#endif
         evhttp_set_gencb(httpd, handle_request, server);
         server->httpd.reset(httpd);
 
