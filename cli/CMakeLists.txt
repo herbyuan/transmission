@@ -7,8 +7,6 @@ target_sources(${TR_NAME}-cli
 target_link_libraries(${TR_NAME}-cli
     PRIVATE
         ${TR_NAME}
-        libevent::event
-        libevent::event_openssl
         fmt::fmt-header-only)
 
 tr_win32_app_info(${TR_NAME}-cli

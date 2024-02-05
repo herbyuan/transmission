@@ -469,6 +469,7 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
         -DLIBDEFLATE_BUILD_GZIP=OFF)
 
 if(CRYPTO_PKG STREQUAL "openssl")
+    add_compile_definitions(WITH_OPENSSL)
     tr_add_external_auto_library(EVENT2 libevent event
         TARGET libevent::event
         CMAKE_ARGS
@@ -486,7 +487,7 @@ if(CRYPTO_PKG STREQUAL "openssl")
             -DEVENT__DISABLE_REGRESS:BOOL=ON
             -DEVENT__DISABLE_SAMPLES:BOOL=ON
             -DEVENT__LIBRARY_TYPE:STRING=STATIC)
-else
+else()
     tr_add_external_auto_library(EVENT2 libevent event
         TARGET libevent::event
         CMAKE_ARGS
