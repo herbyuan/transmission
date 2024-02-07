@@ -479,7 +479,7 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
         -DLIBDEFLATE_BUILD_SHARED_LIB=OFF
         -DLIBDEFLATE_BUILD_GZIP=OFF)
 
-if(CRYPTO_PKG STREQUAL "openssl")
+if(CRYPTO_PKG STREQUAL "openssl" AND NOT CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
     add_compile_definitions(WITH_OPENSSL)
     tr_add_external_auto_library(EVENT2 libevent event
         TARGET libevent::event
