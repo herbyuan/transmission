@@ -29,9 +29,7 @@
 #include <event2/http_struct.h> /* TODO: eventually remove this */
 #include <event2/listener.h>
 
-#include <iostream>
 #include <fstream>
-#include <evhttp.h>
 
 #include <fmt/core.h>
 #include <fmt/chrono.h>
