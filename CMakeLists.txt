@@ -482,7 +482,7 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
 if(CRYPTO_PKG STREQUAL "openssl")
     add_compile_definitions(WITH_OPENSSL)
     find_package(Libevent COMPONENTS core extra openssl)
-    if(Libevent_FOUND AND ($USE_SYSTEM_EVENT2 STREQUAL "AUTO" OR $USE_SYSTEM_EVENT2 STREQUAL "ON"))
+    if(Libevent_FOUND AND (${USE_SYSTEM_EVENT2} STREQUAL "AUTO" OR ${USE_SYSTEM_EVENT2} STREQUAL "ON"))
         target_include_directories(Libevent::core
             INTERFACE
                 ${Libevent_INCLUDE_DIRS})
@@ -532,7 +532,7 @@ if(CRYPTO_PKG STREQUAL "openssl")
 
 else()
     find_package(Libevent COMPONENTS core extra)
-    if(Libevent_FOUND AND ($USE_SYSTEM_EVENT2 STREQUAL "AUTO" OR $USE_SYSTEM_EVENT2 STREQUAL "ON"))
+    if(Libevent_FOUND AND (${USE_SYSTEM_EVENT2} STREQUAL "AUTO" OR ${USE_SYSTEM_EVENT2} STREQUAL "ON"))
         target_include_directories(Libevent::core
             INTERFACE
                 ${Libevent_INCLUDE_DIRS})
