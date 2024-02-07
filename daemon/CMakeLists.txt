@@ -30,7 +30,7 @@ target_include_directories(${TR_NAME}-daemon SYSTEM
     PRIVATE
         $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_INCLUDE_DIRS}>)
 
-if(CRYPTO_PKG STREQUAL "openssl")
+if(CRYPTO_PKG STREQUAL "openssl" AND NOT CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
     target_link_libraries(${TR_NAME}-daemon
         PRIVATE
             ${TR_NAME}

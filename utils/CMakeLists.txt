@@ -5,7 +5,7 @@ foreach(P create edit remote show)
         PRIVATE
             ${P}.cc)
 
-    if(CRYPTO_PKG STREQUAL "openssl")
+    if(CRYPTO_PKG STREQUAL "openssl" AND NOT CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
         target_link_libraries(${TR_NAME}-${P}
             PRIVATE
                 ${TR_NAME}

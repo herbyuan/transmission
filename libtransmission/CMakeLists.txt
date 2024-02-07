@@ -275,7 +275,7 @@ if(ANDROID)
     find_library(log-lib log)
 endif()
 
-if(CRYPTO_PKG STREQUAL "openssl")
+if(CRYPTO_PKG STREQUAL "openssl" AND NOT CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
     target_link_libraries(${TR_NAME}
         PRIVATE
             Threads::Threads
