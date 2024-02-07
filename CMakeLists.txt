@@ -481,36 +481,74 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
 
 if(CRYPTO_PKG STREQUAL "openssl")
     add_compile_definitions(WITH_OPENSSL)
-    tr_add_external_auto_library(EVENT2 libevent event
-        TARGET libevent::event
+    find_package(Libevent COMPONENTS core extra openssl)
+    if(Libevent_FOUND AND ($USE_SYSTEM_EVENT2 STREQUAL "AUTO" OR $USE_SYSTEM_EVENT2 STREQUAL "ON"))
+        target_include_directories(Libevent::core
+            INTERFACE
+                ${Libevent_INCLUDE_DIRS})
+    else()
+        tr_add_external_auto_library(EVENT2CORE libevent event_core
+            TARGET Libevent::core
+            CMAKE_ARGS
+                -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
+                -DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}
+                -DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}
+                -DOPENSSL_CRYPTO_LIBRARY=${OPENSSL_LIBRARIES}
+                -DOPENSSL_SSL_LIBRARY=${OPENSSL_LIBRARIES}
+                -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+                -DEVENT__DISABLE_TESTS:BOOL=ON
+                -DEVENT__DISABLE_REGRESS:BOOL=ON
+                -DEVENT__DISABLE_SAMPLES:BOOL=ON
+                -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+
+        tr_add_external_auto_library(EVENT2EXTRA libevent event_extra
+            TARGET Libevent::extra
+            CMAKE_ARGS
+                -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
+                -DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}
+                -DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}
+                -DOPENSSL_CRYPTO_LIBRARY=${OPENSSL_LIBRARIES}
+                -DOPENSSL_SSL_LIBRARY=${OPENSSL_LIBRARIES}
+                -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+                -DEVENT__DISABLE_TESTS:BOOL=ON
+                -DEVENT__DISABLE_REGRESS:BOOL=ON
+                -DEVENT__DISABLE_SAMPLES:BOOL=ON
+                -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+
+        tr_add_external_auto_library(EVENT2SSL libevent event_openssl
+            TARGET Libevent::openssl
+            CMAKE_ARGS
+                -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
+                -DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}
+                -DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}
+                -DOPENSSL_CRYPTO_LIBRARY=${OPENSSL_LIBRARIES}
+                -DOPENSSL_SSL_LIBRARY=${OPENSSL_LIBRARIES}
+                -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+                -DEVENT__DISABLE_TESTS:BOOL=ON
+                -DEVENT__DISABLE_REGRESS:BOOL=ON
+                -DEVENT__DISABLE_SAMPLES:BOOL=ON
+                -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+    endif()
+
+else()
+    find_package(Libevent COMPONENTS core extra)
+    if(Libevent_FOUND AND ($USE_SYSTEM_EVENT2 STREQUAL "AUTO" OR $USE_SYSTEM_EVENT2 STREQUAL "ON"))
+        target_include_directories(Libevent::core
+            INTERFACE
+                ${Libevent_INCLUDE_DIRS})
+    endif()
+    tr_add_external_auto_library(EVENT2CORE libevent event_core
+        TARGET Libevent::core
         CMAKE_ARGS
-            -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
-            -DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}
-            -DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}
-            -DOPENSSL_CRYPTO_LIBRARY=${OPENSSL_LIBRARIES}
-            -DOPENSSL_SSL_LIBRARY=${OPENSSL_LIBRARIES}
+            -DEVENT__DISABLE_OPENSSL:BOOL=ON
             -DEVENT__DISABLE_BENCHMARK:BOOL=ON
             -DEVENT__DISABLE_TESTS:BOOL=ON
             -DEVENT__DISABLE_REGRESS:BOOL=ON
             -DEVENT__DISABLE_SAMPLES:BOOL=ON
             -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 
-    tr_add_external_auto_library(EVENT2SSL libevent event_openssl
-        TARGET libevent::event_openssl
-        CMAKE_ARGS
-            -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
-            -DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}
-            -DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}
-            -DOPENSSL_CRYPTO_LIBRARY=${OPENSSL_LIBRARIES}
-            -DOPENSSL_SSL_LIBRARY=${OPENSSL_LIBRARIES}
-            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-            -DEVENT__DISABLE_TESTS:BOOL=ON
-            -DEVENT__DISABLE_REGRESS:BOOL=ON
-            -DEVENT__DISABLE_SAMPLES:BOOL=ON
-            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
-else()
-    tr_add_external_auto_library(EVENT2 libevent event
-        TARGET libevent::event
+    tr_add_external_auto_library(EVENT2EXTRA libevent event_extra
+        TARGET Libevent::extra
         CMAKE_ARGS
             -DEVENT__DISABLE_OPENSSL:BOOL=ON
             -DEVENT__DISABLE_BENCHMARK:BOOL=ON

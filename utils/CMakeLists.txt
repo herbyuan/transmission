@@ -11,15 +11,17 @@ foreach(P create edit remote show)
                 ${TR_NAME}
                 CURL::libcurl
                 fmt::fmt-header-only
-                libevent::event
-                libevent::event_openssl)
+                Libevent::core
+                Libevent::extra
+                Libevent::openssl)
     else()
         target_link_libraries(${TR_NAME}-${P}
             PRIVATE
                 ${TR_NAME}
                 CURL::libcurl
                 fmt::fmt-header-only
-                libevent::event)
+                Libevent::core
+                Libevent::extra)
     endif()
 
     tr_win32_app_info(${TR_NAME}-${P}

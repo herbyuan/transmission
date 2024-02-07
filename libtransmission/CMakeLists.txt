@@ -304,8 +304,9 @@ if(CRYPTO_PKG STREQUAL "openssl")
         PUBLIC
             fmt::fmt-header-only
             small::small
-            libevent::event
-            libevent::event_openssl)
+            Libevent::core
+            Libevent::extra
+            Libevent::openssl)
 else()
     target_link_libraries(${TR_NAME}
         PRIVATE
@@ -335,7 +336,8 @@ else()
         PUBLIC
             fmt::fmt-header-only
             small::small
-            libevent::event)
+            Libevent::core
+            Libevent::extra)
 endif()
 
 if(INSTALL_LIB)

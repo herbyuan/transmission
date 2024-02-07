@@ -77,7 +77,8 @@ target_link_libraries(libtransmission-test
         gtestall
         dht::dht
         fmt::fmt-header-only
-        libevent::event
+        Libevent::core
+        Libevent::extra
         WideInteger::WideInteger)
 
 if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)

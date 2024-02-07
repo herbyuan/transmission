@@ -154,7 +154,6 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
             CACHE INTERNAL "")
         set(${ID}_LIBRARY "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIBNAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
             CACHE INTERNAL "")
-
         set(${ID}_INCLUDE_DIRS ${${ID}_INCLUDE_DIR})
         set(${ID}_LIBRARIES ${${ID}_LIBRARY})
 
@@ -211,7 +210,9 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
     endif()
 
     if(_TAEAL_ARG_TARGET AND (USE_SYSTEM_${ID} OR NOT _TAEAL_ARG_SUBPROJECT))
-        add_library(${_TAEAL_ARG_TARGET} INTERFACE IMPORTED)
+        if (NOT TARGET ${_TAEAL_ARG_TARGET})
+            add_library(${_TAEAL_ARG_TARGET} INTERFACE IMPORTED)
+        endif()
 
         target_include_directories(${_TAEAL_ARG_TARGET}
             INTERFACE
