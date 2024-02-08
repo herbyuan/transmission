@@ -21,6 +21,21 @@ find_library(EVENT2_LIBRARY
         event
     HINTS ${_EVENT2_LIBDIR})
 
+find_library(EVENT2_CORE_LIBRARY
+    NAMES
+        event_core
+    HINTS ${_EVENT2_LIBDIR})
+
+find_library(EVENT2_EXTRA_LIBRARY
+    NAMES
+        event_extra
+    HINTS ${_EVENT2_LIBDIR})
+
+find_library(EVENT2_OPENSSL_LIBRARY
+    NAMES
+        event_openssl
+    HINTS ${_EVENT2_LIBDIR})
+
 if(EVENT2_INCLUDE_DIR)
     if(_EVENT2_VERSION)
         set(EVENT2_VERSION ${_EVENT2_VERSION})
@@ -34,13 +49,16 @@ if(EVENT2_INCLUDE_DIR)
 endif()
 
 set(EVENT2_INCLUDE_DIRS ${EVENT2_INCLUDE_DIR})
-set(EVENT2_LIBRARIES ${EVENT2_LIBRARY})
+set(EVENT2_LIBRARIES "${EVENT2_LIBRARY} ${EVENT2_CORE_LIBRARY} ${EVENT2_EXTRA_LIBRARY} ${EVENT2_OPENSSL_LIBRARY}")
 
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(EVENT2
     REQUIRED_VARS
         EVENT2_LIBRARY
+        EVENT2_CORE_LIBRARY
+        EVENT2_EXTRA_LIBRARY
+        EVENT2_OPENSSL_LIBRARY
         EVENT2_INCLUDE_DIR
     VERSION_VAR EVENT2_VERSION)
 
