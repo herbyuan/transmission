@@ -480,7 +480,7 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
 
 if(CRYPTO_PKG STREQUAL "openssl")
     add_compile_definitions(WITH_OPENSSL)
-    tr_add_external_auto_library(EVENT2CORE libevent event_core
+    tr_add_external_auto_library(EVENT2 libevent event_core
         TARGET Libevent::core
         CMAKE_ARGS
             -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
