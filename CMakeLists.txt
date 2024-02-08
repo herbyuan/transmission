@@ -723,25 +723,124 @@ if(CRYPTO_PKG STREQUAL "openssl")
     #         -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 
 else()
-    tr_add_external_auto_library(EVENT2CORE libevent event_core
-        TARGET Libevent::core
-        CMAKE_ARGS
-            -DEVENT__DISABLE_OPENSSL:BOOL=ON
-            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-            -DEVENT__DISABLE_TESTS:BOOL=ON
-            -DEVENT__DISABLE_REGRESS:BOOL=ON
-            -DEVENT__DISABLE_SAMPLES:BOOL=ON
-            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 
-    tr_add_external_auto_library(EVENT2EXTRA libevent event_extra
-        TARGET Libevent::extra
+
+
+    set(EVENT2_UPSTREAM_TARGET event_core)
+    set(EVENT2_UPSTREAM_TARGET event_extra)
+    set(EVENT2_PREFIX "${TR_THIRD_PARTY_BINARY_DIR}/libevent.bld/pfx")
+
+    set(EVENT2_INCLUDE_DIR "${EVENT2_PREFIX}/include"
+        CACHE INTERNAL "")
+    
+    set(EVENT2_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event${CMAKE_STATIC_LIBRARY_SUFFIX}"
+        CACHE INTERNAL "")
+    set(EVENT2_CORE_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_core${CMAKE_STATIC_LIBRARY_SUFFIX}"
+        CACHE INTERNAL "")
+    set(EVENT2_EXTRA_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_extra${CMAKE_STATIC_LIBRARY_SUFFIX}"
+        CACHE INTERNAL "")
+    set(EVENT2_INCLUDE_DIRS ${EVENT2_INCLUDE_DIR})
+
+    set(EVENT2_EXT_PROJ_CMAKE_ARGS)
+
+    if(APPLE)
+        string(REPLACE ";" "$<SEMICOLON>" EVENT2_CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}")
+        list(APPEND EVENT2_EXT_PROJ_CMAKE_ARGS
+            "-DCMAKE_OSX_ARCHITECTURES:STRING=${EVENT2_CMAKE_OSX_ARCHITECTURES}"
+            "-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+            "-DCMAKE_OSX_SYSROOT:PATH=${CMAKE_OSX_SYSROOT}")
+    endif()
+
+    if(ANDROID)
+        list(APPEND EVENT2_EXT_PROJ_CMAKE_ARGS
+            "-DANDROID_PLATFORM=${ANDROID_PLATFORM}"
+            "-DANDROID_NDK=${ANDROID_NDK}"
+            "-DANDROID_ABI=${ANDROID_ABI}"
+            "-DANDROID_STL=${ANDROID_STL}"
+            "-DCMAKE_ANDROID_NDK=${CMAKE_ANDROID_NDK}"
+            "-DCMAKE_ANDROID_ARCH_ABI=${CMAKE_ANDROID_ARCH_ABI}")
+    endif()
+
+    if(VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+        list(APPEND EVENT2_EXT_PROJ_CMAKE_ARGS
+            "-DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
+    endif()
+
+    ExternalProject_Add(
+        ${EVENT2_UPSTREAM_TARGET}
+        PREFIX "${TR_THIRD_PARTY_BINARY_DIR}/libevent.bld"
+        SOURCE_DIR "${TR_THIRD_PARTY_SOURCE_DIR}/libevent"
+        INSTALL_DIR "${EVENT2_PREFIX}"
         CMAKE_ARGS
-            -DEVENT__DISABLE_OPENSSL:BOOL=ON
-            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-            -DEVENT__DISABLE_TESTS:BOOL=ON
-            -DEVENT__DISABLE_REGRESS:BOOL=ON
-            -DEVENT__DISABLE_SAMPLES:BOOL=ON
-            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+            -Wno-dev # We don't want to be warned over unused variables
+            --no-warn-unused-cli
+            "-DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}"
+            "-DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}"
+            "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+            "-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}"
+            "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+            "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}"
+            "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}"
+            "-DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>"
+            "-DCMAKE_INSTALL_LIBDIR:STRING=lib"
+            ${EVENT2_EXT_PROJ_CMAKE_ARGS}
+            "-DEVENT__DISABLE_OPENSSL:BOOL=ON"
+            "-DEVENT__DISABLE_BENCHMARK:BOOL=ON"
+            "-DEVENT__DISABLE_TESTS:BOOL=ON"
+            "-DEVENT__DISABLE_REGRESS:BOOL=ON"
+            "-DEVENT__DISABLE_SAMPLES:BOOL=ON"
+            "-DEVENT__LIBRARY_TYPE:STRING=STATIC"
+        BUILD_BYPRODUCTS
+            "${EVENT2_LIBRARY}"
+            "${EVENT2_CORE_LIBRARY}"
+            "${EVENT2_EXTRA_LIBRARY}")
+
+    set_property(TARGET ${EVENT2_UPSTREAM_TARGET} PROPERTY FOLDER "${TR_THIRD_PARTY_DIR_NAME}")
+
+    # Imported target (below) requires include directories to be present at configuration time
+    file(MAKE_DIRECTORY ${EVENT2_INCLUDE_DIRS})
+
+
+    if (NOT TARGET "Libevent::event")
+        add_library("Libevent::event" INTERFACE IMPORTED)
+    endif()
+
+    target_include_directories("Libevent::event"
+        INTERFACE
+            ${EVENT2_INCLUDE_DIRS})
+
+    target_link_libraries("Libevent::event"
+        INTERFACE
+            "${EVENT2_LIBRARY}"
+            "${EVENT2_CORE_LIBRARY}"
+            "${EVENT2_EXTRA_LIBRARY}")
+
+    if(EVENT2_UPSTREAM_TARGET)
+        add_dependencies("Libevent::event" ${EVENT2_UPSTREAM_TARGET})
+    endif()
+
+
+
+
+    # tr_add_external_auto_library(EVENT2CORE libevent event_core
+    #     TARGET Libevent::core
+    #     CMAKE_ARGS
+    #         -DEVENT__DISABLE_OPENSSL:BOOL=ON
+    #         -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+    #         -DEVENT__DISABLE_TESTS:BOOL=ON
+    #         -DEVENT__DISABLE_REGRESS:BOOL=ON
+    #         -DEVENT__DISABLE_SAMPLES:BOOL=ON
+    #         -DEVENT__LIBRARY_TYPE:STRING=STATIC)
+
+    # tr_add_external_auto_library(EVENT2EXTRA libevent event_extra
+    #     TARGET Libevent::extra
+    #     CMAKE_ARGS
+    #         -DEVENT__DISABLE_OPENSSL:BOOL=ON
+    #         -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+    #         -DEVENT__DISABLE_TESTS:BOOL=ON
+    #         -DEVENT__DISABLE_REGRESS:BOOL=ON
+    #         -DEVENT__DISABLE_SAMPLES:BOOL=ON
+    #         -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 endif()
 
 tr_add_external_auto_library(NATPMP libnatpmp natpmp
