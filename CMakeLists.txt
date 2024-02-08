@@ -483,7 +483,6 @@ if(CRYPTO_PKG STREQUAL "openssl")
     add_compile_definitions(WITH_OPENSSL)
 
     set(EVENT2_UPSTREAM_TARGET event)
-    set(EVENT2_UPSTREAM_TARGET event_openssl)
     set(EVENT2_PREFIX "${TR_THIRD_PARTY_BINARY_DIR}/libevent.bld/pfx")
 
     set(EVENT2_INCLUDE_DIR "${EVENT2_PREFIX}/include"
