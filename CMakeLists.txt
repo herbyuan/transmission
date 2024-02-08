@@ -499,7 +499,6 @@ if(CRYPTO_PKG STREQUAL "openssl")
     set(EVENT2_OPENSSL_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_openssl${CMAKE_STATIC_LIBRARY_SUFFIX}"
         CACHE INTERNAL "")
     set(EVENT2_INCLUDE_DIRS ${EVENT2_INCLUDE_DIR})
-    set(EVENT2_LIBRARIES "${EVENT2CORE_LIBRARY} ${EVENT2_EXTRA_LIBRARY} ${EVENT2_OPENSSL_LIBRARY}")
 
     set(EVENT2_EXT_PROJ_CMAKE_ARGS)
 
@@ -575,7 +574,9 @@ if(CRYPTO_PKG STREQUAL "openssl")
 
     target_link_libraries("Libevent::event"
         INTERFACE
-            ${EVENT2_LIBRARIES})
+            "${EVENT2_CORE_LIBRARY}"
+            "${EVENT2_EXTRA_LIBRARY}"
+            "${EVENT2_OPENSSL_LIBRARY}")
 
     if(EVENT2_UPSTREAM_TARGET)
         add_dependencies("Libevent::event" ${EVENT2_UPSTREAM_TARGET})
