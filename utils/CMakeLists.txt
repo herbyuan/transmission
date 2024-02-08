@@ -11,9 +11,7 @@ foreach(P create edit remote show)
                 ${TR_NAME}
                 CURL::libcurl
                 fmt::fmt-header-only
-                Libevent::core
-                Libevent::extra
-                Libevent::openssl)
+                Libevent::event)
     else()
         target_link_libraries(${TR_NAME}-${P}
             PRIVATE

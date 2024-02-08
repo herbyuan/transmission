@@ -34,9 +34,7 @@ if(CRYPTO_PKG STREQUAL "openssl")
     target_link_libraries(${TR_NAME}-daemon
         PRIVATE
             ${TR_NAME}
-            Libevent::core
-            Libevent::extra
-            Libevent::openssl
+            Libevent::event
             fmt::fmt-header-only
             $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>)
 else()
