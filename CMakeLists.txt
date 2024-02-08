@@ -482,8 +482,7 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
 if(CRYPTO_PKG STREQUAL "openssl")
     add_compile_definitions(WITH_OPENSSL)
 
-    set(EVENT2_UPSTREAM_TARGET event_core)
-    set(EVENT2_UPSTREAM_TARGET event_extra)
+    set(EVENT2_UPSTREAM_TARGET event)
     set(EVENT2_UPSTREAM_TARGET event_openssl)
     set(EVENT2_PREFIX "${TR_THIRD_PARTY_BINARY_DIR}/libevent.bld/pfx")
 
@@ -491,10 +490,6 @@ if(CRYPTO_PKG STREQUAL "openssl")
         CACHE INTERNAL "")
     
     set(EVENT2_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event${CMAKE_STATIC_LIBRARY_SUFFIX}"
-        CACHE INTERNAL "")
-    set(EVENT2_CORE_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_core${CMAKE_STATIC_LIBRARY_SUFFIX}"
-        CACHE INTERNAL "")
-    set(EVENT2_EXTRA_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_extra${CMAKE_STATIC_LIBRARY_SUFFIX}"
         CACHE INTERNAL "")
     set(EVENT2_OPENSSL_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_openssl${CMAKE_STATIC_LIBRARY_SUFFIX}"
         CACHE INTERNAL "")
@@ -555,8 +550,6 @@ if(CRYPTO_PKG STREQUAL "openssl")
             "-DEVENT__LIBRARY_TYPE:STRING=STATIC"
         BUILD_BYPRODUCTS
             "${EVENT2_LIBRARY}"
-            "${EVENT2_CORE_LIBRARY}"
-            "${EVENT2_EXTRA_LIBRARY}"
             "${EVENT2_OPENSSL_LIBRARY}")
 
     set_property(TARGET ${EVENT2_UPSTREAM_TARGET} PROPERTY FOLDER "${TR_THIRD_PARTY_DIR_NAME}")
@@ -576,8 +569,6 @@ if(CRYPTO_PKG STREQUAL "openssl")
     target_link_libraries("Libevent::event"
         INTERFACE
             "${EVENT2_LIBRARY}"
-            "${EVENT2_CORE_LIBRARY}"
-            "${EVENT2_EXTRA_LIBRARY}"
             "${EVENT2_OPENSSL_LIBRARY}")
 
     if(EVENT2_UPSTREAM_TARGET)
@@ -585,18 +576,13 @@ if(CRYPTO_PKG STREQUAL "openssl")
     endif()
 
 else()
-    set(EVENT2_UPSTREAM_TARGET event_core)
-    set(EVENT2_UPSTREAM_TARGET event_extra)
+    set(EVENT2_UPSTREAM_TARGET event)
     set(EVENT2_PREFIX "${TR_THIRD_PARTY_BINARY_DIR}/libevent.bld/pfx")
 
     set(EVENT2_INCLUDE_DIR "${EVENT2_PREFIX}/include"
         CACHE INTERNAL "")
     
     set(EVENT2_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event${CMAKE_STATIC_LIBRARY_SUFFIX}"
-        CACHE INTERNAL "")
-    set(EVENT2_CORE_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_core${CMAKE_STATIC_LIBRARY_SUFFIX}"
-        CACHE INTERNAL "")
-    set(EVENT2_EXTRA_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_extra${CMAKE_STATIC_LIBRARY_SUFFIX}"
         CACHE INTERNAL "")
     set(EVENT2_INCLUDE_DIRS ${EVENT2_INCLUDE_DIR})
 
@@ -650,9 +636,7 @@ else()
             "-DEVENT__DISABLE_SAMPLES:BOOL=ON"
             "-DEVENT__LIBRARY_TYPE:STRING=STATIC"
         BUILD_BYPRODUCTS
-            "${EVENT2_LIBRARY}"
-            "${EVENT2_CORE_LIBRARY}"
-            "${EVENT2_EXTRA_LIBRARY}")
+            "${EVENT2_LIBRARY}")
 
     set_property(TARGET ${EVENT2_UPSTREAM_TARGET} PROPERTY FOLDER "${TR_THIRD_PARTY_DIR_NAME}")
 
@@ -670,34 +654,11 @@ else()
 
     target_link_libraries("Libevent::event"
         INTERFACE
-            "${EVENT2_LIBRARY}"
-            "${EVENT2_CORE_LIBRARY}"
-            "${EVENT2_EXTRA_LIBRARY}")
+            "${EVENT2_LIBRARY}")
 
     if(EVENT2_UPSTREAM_TARGET)
         add_dependencies("Libevent::event" ${EVENT2_UPSTREAM_TARGET})
     endif()
-
-
-    # tr_add_external_auto_library(EVENT2CORE libevent event_core
-    #     TARGET Libevent::core
-    #     CMAKE_ARGS
-    #         -DEVENT__DISABLE_OPENSSL:BOOL=ON
-    #         -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-    #         -DEVENT__DISABLE_TESTS:BOOL=ON
-    #         -DEVENT__DISABLE_REGRESS:BOOL=ON
-    #         -DEVENT__DISABLE_SAMPLES:BOOL=ON
-    #         -DEVENT__LIBRARY_TYPE:STRING=STATIC)
-
-    # tr_add_external_auto_library(EVENT2EXTRA libevent event_extra
-    #     TARGET Libevent::extra
-    #     CMAKE_ARGS
-    #         -DEVENT__DISABLE_OPENSSL:BOOL=ON
-    #         -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-    #         -DEVENT__DISABLE_TESTS:BOOL=ON
-    #         -DEVENT__DISABLE_REGRESS:BOOL=ON
-    #         -DEVENT__DISABLE_SAMPLES:BOOL=ON
-    #         -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 endif()
 
 tr_add_external_auto_library(NATPMP libnatpmp natpmp
