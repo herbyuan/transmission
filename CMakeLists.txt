@@ -565,8 +565,8 @@ if(CRYPTO_PKG STREQUAL "openssl")
     file(MAKE_DIRECTORY ${EVENT2_INCLUDE_DIRS})
 
 
-    if (NOT TARGET "Libevent:event")
-        add_library("Libevent:event" INTERFACE IMPORTED)
+    if (NOT TARGET "Libevent::event")
+        add_library("Libevent::event" INTERFACE IMPORTED)
     endif()
 
     target_include_directories("Libevent::event"
