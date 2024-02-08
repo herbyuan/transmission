@@ -334,8 +334,7 @@ else()
         PUBLIC
             fmt::fmt-header-only
             small::small
-            Libevent::core
-            Libevent::extra)
+            Libevent::event)
 endif()
 
 if(INSTALL_LIB)

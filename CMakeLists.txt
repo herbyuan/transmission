@@ -820,8 +820,6 @@ else()
     endif()
 
 
-
-
     # tr_add_external_auto_library(EVENT2CORE libevent event_core
     #     TARGET Libevent::core
     #     CMAKE_ARGS

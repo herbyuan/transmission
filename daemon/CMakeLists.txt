@@ -41,8 +41,7 @@ else()
     target_link_libraries(${TR_NAME}-daemon
         PRIVATE
             ${TR_NAME}
-            Libevent::core
-            Libevent::extra
+            Libevent::event
             fmt::fmt-header-only
             $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>)
 endif()

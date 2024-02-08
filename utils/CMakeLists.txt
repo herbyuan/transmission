@@ -18,8 +18,7 @@ foreach(P create edit remote show)
                 ${TR_NAME}
                 CURL::libcurl
                 fmt::fmt-header-only
-                Libevent::core
-                Libevent::extra)
+                Libevent::event)
     endif()
 
     tr_win32_app_info(${TR_NAME}-${P}
