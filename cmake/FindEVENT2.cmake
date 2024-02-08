@@ -11,7 +11,7 @@ if(UNIX)
     find_package(PkgConfig QUIET)
     pkg_check_modules(_EVENT2 QUIET libevent)
 endif()
-
+message(STATUS "-------------------------Looking for libev-------------------------")
 find_path(EVENT2_INCLUDE_DIR
     NAMES event2/event.h
     HINTS ${_EVENT2_INCLUDEDIR})
@@ -47,7 +47,7 @@ if(EVENT2_INCLUDE_DIR)
         endif()
     endif()
 endif()
-
+message(STATUS "-------------------------${EVENT2_LIBRARY} ${EVENT2_CORE_LIBRARY} ${EVENT2_EXTRA_LIBRARY} ${EVENT2_OPENSSL_LIBRARY}-------------------------")
 set(EVENT2_INCLUDE_DIRS ${EVENT2_INCLUDE_DIR})
 set(EVENT2_LIBRARIES "${EVENT2_LIBRARY} ${EVENT2_CORE_LIBRARY} ${EVENT2_EXTRA_LIBRARY} ${EVENT2_OPENSSL_LIBRARY}")
 
