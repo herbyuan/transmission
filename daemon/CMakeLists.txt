@@ -30,21 +30,12 @@ target_include_directories(${TR_NAME}-daemon SYSTEM
     PRIVATE
         $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_INCLUDE_DIRS}>)
 
-if(CRYPTO_PKG STREQUAL "openssl")
-    target_link_libraries(${TR_NAME}-daemon
-        PRIVATE
-            ${TR_NAME}
-            Libevent::event
-            fmt::fmt-header-only
-            $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>)
-else()
-    target_link_libraries(${TR_NAME}-daemon
-        PRIVATE
-            ${TR_NAME}
-            Libevent::event
-            fmt::fmt-header-only
-            $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>)
-endif()
+target_link_libraries(${TR_NAME}-daemon
+    PRIVATE
+        ${TR_NAME}
+        Libevent::event
+        fmt::fmt-header-only
+        $<$<BOOL:${WITH_SYSTEMD}>:${SYSTEMD_LIBRARIES}>)
 
 tr_win32_app_info(${TR_NAME}-daemon
     "Transmission Daemon"
