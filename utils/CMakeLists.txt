@@ -5,22 +5,12 @@ foreach(P create edit remote show)
         PRIVATE
             ${P}.cc)
 
-    if(CRYPTO_PKG STREQUAL "openssl" AND NOT CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
-        target_link_libraries(${TR_NAME}-${P}
-            PRIVATE
-                ${TR_NAME}
-                CURL::libcurl
-                fmt::fmt-header-only
-                libevent::event
-                libevent::event_openssl)
-    else()
-        target_link_libraries(${TR_NAME}-${P}
-            PRIVATE
-                ${TR_NAME}
-                CURL::libcurl
-                fmt::fmt-header-only
-                libevent::event)
-    endif()
+    target_link_libraries(${TR_NAME}-${P}
+        PRIVATE
+            ${TR_NAME}
+            CURL::libcurl
+            fmt::fmt-header-only
+            Libevent::event)
 
     tr_win32_app_info(${TR_NAME}-${P}
         "Transmission Utility ('${P}')"

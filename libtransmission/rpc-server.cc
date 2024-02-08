@@ -29,6 +29,8 @@
 #include <event2/http_struct.h> /* TODO: eventually remove this */
 #include <event2/listener.h>
 
+#include <fstream>
+
 #include <fmt/core.h>
 #include <fmt/chrono.h>
 
@@ -52,7 +54,6 @@
 #include "libtransmission/web-utils.h"
 
 #ifdef WITH_OPENSSL
-#include <fstream>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <event2/bufferevent_ssl.h>
