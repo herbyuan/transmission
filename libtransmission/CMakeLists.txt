@@ -305,7 +305,7 @@ target_link_libraries(${TR_NAME}
     PUBLIC
         fmt::fmt-header-only
         small::small
-        libevent::event)
+        Libevent::event)
 
 if(INSTALL_LIB)
     install(
