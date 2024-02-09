@@ -206,7 +206,6 @@ public:
     }
     Settings settings_;
 
-
     std::vector<std::string> host_whitelist_;
     std::vector<std::string> whitelist_;
     std::string const web_client_dir_;
