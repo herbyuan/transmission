@@ -190,7 +190,7 @@ public:
         return settings_.socket_mode;
     }
 
-    [[nodiscard]] constexpr auto issslEnabled() const noexcept
+    [[nodiscard]] constexpr auto is_ssl_enabled() const noexcept
     {
         return settings_.is_ssl_enabled;
     }

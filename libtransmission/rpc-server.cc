@@ -868,7 +868,7 @@ void start_server(tr_rpc_server* server)
 
 #ifdef WITH_OPENSSL
     SSL_CTX* m_ctx = nullptr;
-    if (server->issslEnabled())
+    if (server->is_ssl_enabled())
     {
         m_ctx = tr_set_cert(server->ssl_cert().c_str(), server->ssl_key().c_str());
         if (m_ctx == nullptr)
