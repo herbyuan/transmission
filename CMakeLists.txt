@@ -552,7 +552,7 @@ if(CRYPTO_PKG STREQUAL "openssl")
             ${EVENT2_EXT_PROJ_CMAKE_ARGS}
             "-DOPENSSL_ROOT_DIR=${OPENSSL_INCLUDE_DIR}/.."
             "-DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}"
-            # "-DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}"
+            "-DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}"
             # "-DOPENSSL_CRYPTO_LIBRARY=D:/x64-prefix/lib/libcrypto.lib"
             # "-DOPENSSL_CRYPTO_LIBRARY=D:/x64-prefix/lib"            
             # "-DOPENSSL_SSL_LIBRARY=${OPENSSL_LIBRARIES}"
