@@ -550,7 +550,7 @@ if(CRYPTO_PKG STREQUAL "openssl")
             "-DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>"
             "-DCMAKE_INSTALL_LIBDIR:STRING=lib"
             ${EVENT2_EXT_PROJ_CMAKE_ARGS}
-            "-DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}"
+            "-DOPENSSL_ROOT_DIR=D:/x64-prefix"
             "-DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}"
             # "-DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}"
             "-DOPENSSL_CRYPTO_LIBRARY=D:/x64-prefix/lib/libcrypto.lib"
