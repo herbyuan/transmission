@@ -53,7 +53,7 @@
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"
 
-#ifdef WITH_OPENSSL
+#ifdef WITH_LIBEVENT_OPENSSL
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <event2/bufferevent_ssl.h>
@@ -651,7 +651,7 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
     server->start_retry_counter = 0;
 }
 
-#ifdef WITH_OPENSSL
+#ifdef WITH_LIBEVENT_OPENSSL
 struct bufferevent* bevcb(struct event_base* base, void* arg)
 {
     struct bufferevent* r = nullptr;
@@ -903,7 +903,7 @@ void start_server(tr_rpc_server* server)
     auto const address = server->get_bind_address();
     auto const port = server->port();
 
-#ifdef WITH_OPENSSL
+#ifdef WITH_LIBEVENT_OPENSSL
     SSL_CTX* m_ctx = nullptr;
     if (server->is_ssl_enabled())
     {
@@ -943,7 +943,7 @@ void start_server(tr_rpc_server* server)
     }
     else
     {
-#ifdef WITH_OPENSSL
+#ifdef WITH_LIBEVENT_OPENSSL
         if (m_ctx != nullptr)
         {
             evhttp_set_bevcb(httpd, bevcb, m_ctx);
