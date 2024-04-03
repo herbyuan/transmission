@@ -236,11 +236,11 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
             endforeach()
             target_link_libraries(${_TAEAL_ARG_TARGET}
                 INTERFACE
-                    ${${ID}_LINK_LIBS})
+                    ${${ID}_BUILD_LIBS})
         else()
             target_link_libraries(${_TAEAL_ARG_TARGET}
                 INTERFACE
-                    ${${ID}_LIBRARIES})
+                    ${${ID}_BUILD_LIBS})
         endif()
 
         if(${ID}_UPSTREAM_TARGET)
