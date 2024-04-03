@@ -503,7 +503,7 @@ tr_add_external_auto_library(EVENT2 libevent event
         -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 
 # if(CRYPTO_PKG STREQUAL "openssl")
-#     add_compile_definitions(WITH_OPENSSL)
+#     add_compile_definitions(WITH_LIBEVENT_OPENSSL)
 
 #     set(EVENT2_UPSTREAM_TARGET event)
 #     set(EVENT2_PREFIX "${TR_THIRD_PARTY_BINARY_DIR}/libevent.bld/pfx")

@@ -129,7 +129,7 @@ function(tr_process_list_conditions VAR_PREFIX)
 endfunction()
 
 macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
-    cmake_parse_arguments(_TAEAL_ARG "SUBPROJECT" "TARGET" "CMAKE_ARGS" ${ARGN})
+    cmake_parse_arguments(_TAEAL_ARG "SUBPROJECT" "TARGET" "CMAKE_ARGS" "EXTRA_LIB" ${ARGN})
 
     if(USE_SYSTEM_${ID})
         tr_get_required_flag(USE_SYSTEM_${ID} SYSTEM_${ID}_IS_REQUIRED)
@@ -154,6 +154,24 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
             CACHE INTERNAL "")
         set(${ID}_LIBRARY "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIBNAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
             CACHE INTERNAL "")
+        
+        if(_TAEAL_ARG_EXTRA_LIB)
+            foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
+                set(${ID}_LIBRARY "${${ID}_LIBRARY};${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+                    CACHE INTERNAL "")
+            endforeach()
+        endif()
+
+        set(${ID}_BUILD_LIBS)
+        list(APPEND ${ID}_BUILD_LIBS ${${ID}_LIBRARY})
+
+        if(_TAEAL_ARG_EXTRA_LIB)
+            foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
+                list(APPEND ${ID}_BUILD_LIBS "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+            endforeach()
+        endif()
+ 
+
 
         set(${ID}_INCLUDE_DIRS ${${ID}_INCLUDE_DIR})
         set(${ID}_LIBRARIES ${${ID}_LIBRARY})
@@ -202,7 +220,8 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
                 "-DCMAKE_INSTALL_LIBDIR:STRING=lib"
                 ${${ID}_EXT_PROJ_CMAKE_ARGS}
                 ${_TAEAL_ARG_CMAKE_ARGS}
-            BUILD_BYPRODUCTS "${${ID}_LIBRARY}")
+            BUILD_BYPRODUCTS
+                ${ID}_BUILD_LIBS)
 
         set_property(TARGET ${${ID}_UPSTREAM_TARGET} PROPERTY FOLDER "${TR_THIRD_PARTY_DIR_NAME}")
 
@@ -221,7 +240,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
 
         target_link_libraries(${_TAEAL_ARG_TARGET}
             INTERFACE
-                ${${ID}_LIBRARIES})
+                ${ID}_BUILD_LIBS)
 
         if(${ID}_UPSTREAM_TARGET)
             add_dependencies(${_TAEAL_ARG_TARGET} ${${ID}_UPSTREAM_TARGET})
