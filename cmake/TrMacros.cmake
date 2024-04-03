@@ -221,7 +221,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
                 ${${ID}_EXT_PROJ_CMAKE_ARGS}
                 ${_TAEAL_ARG_CMAKE_ARGS}
             BUILD_BYPRODUCTS
-                ${${ID}_BUILD_LIBS})
+                "${${ID}_LIBRARY}")
 
         set_property(TARGET ${${ID}_UPSTREAM_TARGET} PROPERTY FOLDER "${TR_THIRD_PARTY_DIR_NAME}")
 
