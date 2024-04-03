@@ -239,9 +239,20 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
             INTERFACE
                 ${${ID}_INCLUDE_DIRS})
 
-        target_link_libraries(${_TAEAL_ARG_TARGET}
-            INTERFACE
-                ${${ID}_LIBRARIES})
+        if(_TAEAL_ARG_EXTRA_LIB)
+            set(EVENT2_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event${CMAKE_STATIC_LIBRARY_SUFFIX}"
+                CACHE INTERNAL "")
+            set(EVENT2_OPENSSL_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_openssl${CMAKE_STATIC_LIBRARY_SUFFIX}"
+                CACHE INTERNAL "")
+            target_link_libraries(${_TAEAL_ARG_TARGET}
+                INTERFACE
+                    "${EVENT2_LIBRARY}"
+                    "${EVENT2_OPENSSL_LIBRARY}")
+        else()
+            target_link_libraries(${_TAEAL_ARG_TARGET}
+                INTERFACE
+                    ${${ID}_LIBRARIES})
+        endif()
 
         if(${ID}_UPSTREAM_TARGET)
             add_dependencies(${_TAEAL_ARG_TARGET} ${${ID}_UPSTREAM_TARGET})

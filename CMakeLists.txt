@@ -492,21 +492,34 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
         -DLIBDEFLATE_BUILD_SHARED_LIB=OFF
         -DLIBDEFLATE_BUILD_GZIP=OFF)
 
-tr_add_external_auto_library(EVENT2 libevent event
-    TARGET libevent::event
-    CMAKE_ARGS
-        -DOPENSSL_ROOT_DIR=${OPENSSL_INCLUDE_DIR}/..
-        -DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}
-        -DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}
-        -DOPENSSL_CRYPTO_LIBRARY=${OPENSSL_CRYPTO_LIBRARY}
-        -DOPENSSL_SSL_LIBRARY=${OPENSSL_SSL_LIBRARY}
-        -DEVENT__DISABLE_BENCHMARK:BOOL=ON
-        -DEVENT__DISABLE_TESTS:BOOL=ON
-        -DEVENT__DISABLE_REGRESS:BOOL=ON
-        -DEVENT__DISABLE_SAMPLES:BOOL=ON
-        -DEVENT__LIBRARY_TYPE:STRING=STATIC
-    EXTRA_LIB
-        event_openssl)
+message(STATUS "---------------CRYPTO_PKG----------------${CRYPTO_PKG}")
+if(CRYPTO_PKG STREQUAL "openssl")
+    tr_add_external_auto_library(EVENT2 libevent event
+        TARGET libevent::event
+        CMAKE_ARGS
+            -DOPENSSL_ROOT_DIR=${OPENSSL_INCLUDE_DIR}/..
+            -DOPENSSL_INCLUDE_DIR=${OPENSSL_INCLUDE_DIR}
+            -DOPENSSL_LIBRARIES=${OPENSSL_LIBRARIES}
+            -DOPENSSL_CRYPTO_LIBRARY=${OPENSSL_CRYPTO_LIBRARY}
+            -DOPENSSL_SSL_LIBRARY=${OPENSSL_SSL_LIBRARY}
+            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+            -DEVENT__DISABLE_TESTS:BOOL=ON
+            -DEVENT__DISABLE_REGRESS:BOOL=ON
+            -DEVENT__DISABLE_SAMPLES:BOOL=ON
+            -DEVENT__LIBRARY_TYPE:STRING=STATIC
+        EXTRA_LIB event_openssl)
+else()
+    tr_add_external_auto_library(EVENT2 libevent event
+        TARGET libevent::event
+        CMAKE_ARGS
+            -DEVENT__DISABLE_OPENSSL:BOOL=ON
+            -DEVENT__DISABLE_BENCHMARK:BOOL=ON
+            -DEVENT__DISABLE_TESTS:BOOL=ON
+            -DEVENT__DISABLE_REGRESS:BOOL=ON
+            -DEVENT__DISABLE_SAMPLES:BOOL=ON
+            -DEVENT__LIBRARY_TYPE:STRING=STATIC
+        EXTRA_LIB event_openssl)
+endif()
 
 # if(CRYPTO_PKG STREQUAL "openssl")
 #     add_compile_definitions(WITH_LIBEVENT_OPENSSL)
