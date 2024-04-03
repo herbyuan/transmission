@@ -748,7 +748,7 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
 
         while (true)
         {
-            ca = X509_new_ex(ctx->libctx, ctx->propq);
+            ca = X509_new_ex(nullptr, nullptr);
             if (ca == nullptr)
             {
                 ERR_raise(ERR_LIB_SSL, ERR_R_ASN1_LIB);
@@ -819,7 +819,7 @@ int tr_SSL_CTX_use_PrivateKey_PEM(SSL_CTX* ctx, char const* file)
         return -1;
     }
 
-    if (SSL_CTX_use_PrivateKey(ctx,evpkey) != 1)
+    if (SSL_CTX_use_PrivateKey(ctx, evpkey) != 1)
     {
         BIO_free(pkeybio);
         EVP_PKEY_free(evpkey);
