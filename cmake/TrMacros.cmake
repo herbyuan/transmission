@@ -154,26 +154,15 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
             CACHE INTERNAL "")
         set(${ID}_LIBRARY "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIBNAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
             CACHE INTERNAL "")
-        
-        # if(_TAEAL_ARG_EXTRA_LIB)
-        #     foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
-        #         set(${ID}_LIBRARY "${${ID}_LIBRARY};${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-        #             CACHE INTERNAL "")
-        #     endforeach()
-        # endif()
 
         set(${ID}_BUILD_LIBS)
         list(APPEND ${ID}_BUILD_LIBS ${${ID}_LIBRARY})
-
         if(_TAEAL_ARG_EXTRA_LIB)
-            message(STATUS "----------------_TAEAL_ARG_EXTRA_LIB---------------")
             foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
                 list(APPEND ${ID}_BUILD_LIBS "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
             endforeach()
         endif()
  
-
-
         set(${ID}_INCLUDE_DIRS ${${ID}_INCLUDE_DIR})
         set(${ID}_LIBRARIES ${${ID}_LIBRARY})
 
@@ -240,14 +229,11 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
                 ${${ID}_INCLUDE_DIRS})
 
         if(_TAEAL_ARG_EXTRA_LIB)
-            message(STATUS "----------------EVENT2_OPENSSL_LIBRARY---------------")
-            set(EVENT2_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event${CMAKE_STATIC_LIBRARY_SUFFIX}"
-                CACHE INTERNAL "")
-            set(EVENT2_OPENSSL_LIBRARY "${EVENT2_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}event_openssl${CMAKE_STATIC_LIBRARY_SUFFIX}"
-                CACHE INTERNAL "")
             set(${ID}_LINK_LIBS)
-            list(APPEND ${ID}_LINK_LIBS "${EVENT2_LIBRARY}")
-            list(APPEND ${ID}_LINK_LIBS "${EVENT2_OPENSSL_LIBRARY}")
+            list(APPEND ${ID}_LINK_LIBS ${${ID}_LIBRARIES})
+            foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
+                list(APPEND ${ID}_LINK_LIBS "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+            endforeach()
             target_link_libraries(${_TAEAL_ARG_TARGET}
                 INTERFACE
                     ${${ID}_LINK_LIBS})
