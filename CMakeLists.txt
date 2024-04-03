@@ -506,8 +506,7 @@ if(CRYPTO_PKG STREQUAL "openssl")
             -DEVENT__DISABLE_TESTS:BOOL=ON
             -DEVENT__DISABLE_REGRESS:BOOL=ON
             -DEVENT__DISABLE_SAMPLES:BOOL=ON
-            -DEVENT__LIBRARY_TYPE:STRING=STATIC
-        EXTRA_LIB event_openssl)
+            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 else()
     tr_add_external_auto_library(EVENT2 libevent event
         TARGET libevent::event
@@ -517,8 +516,7 @@ else()
             -DEVENT__DISABLE_TESTS:BOOL=ON
             -DEVENT__DISABLE_REGRESS:BOOL=ON
             -DEVENT__DISABLE_SAMPLES:BOOL=ON
-            -DEVENT__LIBRARY_TYPE:STRING=STATIC
-        EXTRA_LIB event_openssl)
+            -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 endif()
 
 # if(CRYPTO_PKG STREQUAL "openssl")
