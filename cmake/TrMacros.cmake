@@ -129,7 +129,7 @@ function(tr_process_list_conditions VAR_PREFIX)
 endfunction()
 
 macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
-    cmake_parse_arguments(_TAEAL_ARG "SUBPROJECT" "TARGET" "CMAKE_ARGS" "EXTRA_LIB" ${ARGN})
+    cmake_parse_arguments(_TAEAL_ARG "SUBPROJECT" "TARGET" "CMAKE_ARGS;EXTRA_LIB" ${ARGN})
 
     if(USE_SYSTEM_${ID})
         tr_get_required_flag(USE_SYSTEM_${ID} SYSTEM_${ID}_IS_REQUIRED)
