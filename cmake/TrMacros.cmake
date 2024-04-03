@@ -241,7 +241,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
 
         target_link_libraries(${_TAEAL_ARG_TARGET}
             INTERFACE
-                ${${ID}_BUILD_LIBS})
+                ${${ID}_LIBRARIES})
 
         if(${ID}_UPSTREAM_TARGET)
             add_dependencies(${_TAEAL_ARG_TARGET} ${${ID}_UPSTREAM_TARGET})
