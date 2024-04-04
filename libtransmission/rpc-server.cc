@@ -692,7 +692,7 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     if (in == nullptr)
     {
         tr_logAddWarn(fmt::format("BIO_s_file() ERROR!!!"));
-        ERR_print_errors_fp(stdout);
+        // ERR_print_errors_fp(stdout);
         printf("------------------------------\n");
         unsigned long err = ERR_get_error();
         char err_msg[256];
