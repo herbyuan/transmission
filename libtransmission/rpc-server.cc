@@ -692,8 +692,16 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     // std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
     // ifs.close();
     // BIO_write(in, content.c_str(), content.length());
-
-    in = BIO_new(BIO_s_file());
+    auto method = BIO_s_file();
+    printf("BIO_s_file(): 0x%p\n", method);
+    unsigned long err = ERR_get_error();
+    char err_msg[256];
+    if (err)
+    {
+        ERR_error_string_n(err, err_msg, sizeof(err_msg));
+        printf("Error creating BIO: %s\n", err_msg);
+    }
+    in = BIO_new(method);
     if (in == nullptr)
     {
         tr_logAddWarn(fmt::format("BIO_s_file() ERROR!!!"));
