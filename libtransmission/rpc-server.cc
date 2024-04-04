@@ -841,37 +841,37 @@ int tr_SSL_CTX_use_PrivateKey_PEM(SSL_CTX* ctx, char const* file)
 
     return 1;
 
-    int ret = 0;
-    EVP_PKEY* pkey = nullptr;
-    BIO* in = BIO_new(BIO_s_mem());
-    if (in == nullptr)
-    {
-        ERR_raise(ERR_LIB_SSL, ERR_R_BUF_LIB);
-        return ret;
-    }
+    // int ret = 0;
+    // EVP_PKEY* pkey = nullptr;
+    // BIO* in = BIO_new(BIO_s_mem());
+    // if (in == nullptr)
+    // {
+    //     ERR_raise(ERR_LIB_SSL, ERR_R_BUF_LIB);
+    //     return ret;
+    // }
 
-    std::ifstream ifs(file);
-    std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-    ifs.close();
-    BIO_write(in, content.c_str(), content.length());
+    // std::ifstream ifs(file);
+    // std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+    // ifs.close();
+    // BIO_write(in, content.c_str(), content.length());
 
-    pkey = PEM_read_bio_PrivateKey_ex(
-        in,
-        nullptr,
-        SSL_CTX_get_default_passwd_cb(ctx),
-        SSL_CTX_get_default_passwd_cb_userdata(ctx),
-        nullptr,
-        nullptr);
-    if (pkey == nullptr)
-    {
-        ERR_raise(ERR_LIB_SSL, ERR_R_PEM_LIB);
-        BIO_free(in);
-        return ret;
-    }
-    ret = SSL_CTX_use_PrivateKey(ctx, pkey);
-    EVP_PKEY_free(pkey);
-    BIO_free(in);
-    return ret;
+    // pkey = PEM_read_bio_PrivateKey_ex(
+    //     in,
+    //     nullptr,
+    //     SSL_CTX_get_default_passwd_cb(ctx),
+    //     SSL_CTX_get_default_passwd_cb_userdata(ctx),
+    //     nullptr,
+    //     nullptr);
+    // if (pkey == nullptr)
+    // {
+    //     ERR_raise(ERR_LIB_SSL, ERR_R_PEM_LIB);
+    //     BIO_free(in);
+    //     return ret;
+    // }
+    // ret = SSL_CTX_use_PrivateKey(ctx, pkey);
+    // EVP_PKEY_free(pkey);
+    // BIO_free(in);
+    // return ret;
 #endif
 }
 
