@@ -817,7 +817,7 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     BIO_free(in);
     return ret;
 
-#endif
+// #endif
 }
 
 int tr_SSL_CTX_use_PrivateKey_PEM(SSL_CTX* ctx, char const* file)
