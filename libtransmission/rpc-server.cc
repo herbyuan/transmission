@@ -680,32 +680,11 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     passwd_callback_userdata = SSL_CTX_get_default_passwd_cb_userdata(ctx);
 
 
-    // in = BIO_new(BIO_s_mem());
-    // if (in == nullptr)
-    // {
-    //     tr_logAddWarn(fmt::format("BIO_s_file() ERROR!!!"));
-    //     ERR_raise(ERR_LIB_SSL, ERR_R_BUF_LIB);
-    //     return ret;
-    // }
-
-    in = BIO_new(BIO_s_file());
+    in = BIO_new(BIO_s_mem());
     if (in == nullptr)
     {
         tr_logAddWarn(fmt::format("BIO_s_file() ERROR!!!"));
-        // ERR_print_errors_fp(stdout);
-        printf("------------------------------\n");
-        unsigned long err = ERR_get_error();
-        char err_msg[256];
-        ERR_error_string_n(err, err_msg, sizeof(err_msg));
-        printf("Error creating BIO: %s\n", err_msg);
         ERR_raise(ERR_LIB_SSL, ERR_R_BUF_LIB);
-        return ret;
-    }
-    if (BIO_read_filename(in, file) <= 0)
-    {
-        ERR_raise(ERR_LIB_SSL, ERR_R_SYS_LIB);
-        X509_free(x);
-        BIO_free(in);
         return ret;
     }
 
@@ -713,6 +692,29 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
     ifs.close();
     BIO_write(in, content.c_str(), content.length());
+
+    // in = BIO_new(BIO_s_file());
+    // if (in == nullptr)
+    // {
+    //     tr_logAddWarn(fmt::format("BIO_s_file() ERROR!!!"));
+    //     // ERR_print_errors_fp(stdout);
+    //     printf("------------------------------\n");
+    //     unsigned long err = ERR_get_error();
+    //     char err_msg[256];
+    //     ERR_error_string_n(err, err_msg, sizeof(err_msg));
+    //     printf("Error creating BIO: %s\n", err_msg);
+    //     ERR_raise(ERR_LIB_SSL, ERR_R_BUF_LIB);
+    //     return ret;
+    // }
+    // if (BIO_read_filename(in, file) <= 0)
+    // {
+    //     ERR_raise(ERR_LIB_SSL, ERR_R_SYS_LIB);
+    //     X509_free(x);
+    //     BIO_free(in);
+    //     return ret;
+    // }
+
+
 
     OSSL_LIB_CTX* libctx = nullptr;
     char const* propq = nullptr;
