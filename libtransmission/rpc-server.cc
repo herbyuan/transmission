@@ -802,31 +802,31 @@ int tr_SSL_CTX_use_PrivateKey_PEM(SSL_CTX* ctx, char const* file)
 #if OPENSSL_VERSION_NUMBER < 0x30000000
     return SSL_CTX_use_PrivateKey_file(ctx, file, SSL_FILETYPE_PEM);
 #else
-    // std::ifstream ifs(file);
-    // std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-    // ifs.close();
+    std::ifstream ifs(file);
+    std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+    ifs.close();
 
-    // BIO* pkeybio = BIO_new_mem_buf(content.c_str(), content.length());
-    // if (pkeybio == nullptr)
-    // {
-    //     return -1;
-    // }
+    BIO* pkeybio = BIO_new_mem_buf(content.c_str(), content.length());
+    if (pkeybio == nullptr)
+    {
+        return -1;
+    }
 
-    // EVP_PKEY* evpkey = PEM_read_bio_PrivateKey(pkeybio, nullptr, nullptr, nullptr);
-    // if (nullptr == evpkey)
-    // {
-    //     BIO_free(pkeybio);
-    //     return -1;
-    // }
+    EVP_PKEY* evpkey = PEM_read_bio_PrivateKey(pkeybio, nullptr, nullptr, nullptr);
+    if (nullptr == evpkey)
+    {
+        BIO_free(pkeybio);
+        return -1;
+    }
 
-    // if (SSL_CTX_use_PrivateKey(ctx, evpkey) != 1)
-    // {
-    //     BIO_free(pkeybio);
-    //     EVP_PKEY_free(evpkey);
-    //     return -1;
-    // }
+    if (SSL_CTX_use_PrivateKey(ctx, evpkey) != 1)
+    {
+        BIO_free(pkeybio);
+        EVP_PKEY_free(evpkey);
+        return -1;
+    }
 
-    // return 1;
+    return 1;
 
     int ret = 0;
     EVP_PKEY* pkey = nullptr;
