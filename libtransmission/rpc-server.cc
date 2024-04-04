@@ -662,9 +662,9 @@ struct bufferevent* bevcb(struct event_base* base, void* arg)
 
 int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
 {
-#if OPENSSL_VERSION_NUMBER < 0x30000000
-    return SSL_CTX_use_certificate_chain_file(ctx, file);
-#else
+// #if OPENSSL_VERSION_NUMBER < 0x30000000
+    // return SSL_CTX_use_certificate_chain_file(ctx, file);
+// #else
     /*Encountered some problem with BIO_s_file() in windows so read certs into mem first*/
     if (ctx == nullptr)
     {
