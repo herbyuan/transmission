@@ -722,6 +722,96 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     in = BIO_new(method);
     if (in == nullptr)
     {
+        {
+            struct my_bio_st {
+                OSSL_LIB_CTX *libctx;
+                const BIO_METHOD *method;
+                /* bio, mode, argp, argi, argl, ret */
+            #ifndef OPENSSL_NO_DEPRECATED_3_0
+                BIO_callback_fn callback;
+            #endif
+                BIO_callback_fn_ex callback_ex;
+                char *cb_arg;               /* first argument for the callback */
+                int init;
+                int shutdown;
+                int flags;                  /* extra storage */
+                int retry_reason;
+                int num;
+                void *ptr;
+                struct bio_st *next_bio;    /* used by filter BIOs */
+                struct bio_st *prev_bio;    /* used by filter BIOs */
+                int references;
+                uint64_t num_read;
+                uint64_t num_write;
+                CRYPTO_EX_DATA ex_data;
+                CRYPTO_RWLOCK *lock;
+            };
+
+            struct my_bio_method_st {
+                int type;
+                char *name;
+                int (*bwrite) (BIO *, const char *, size_t, size_t *);
+                int (*bwrite_old) (BIO *, const char *, int);
+                int (*bread) (BIO *, char *, size_t, size_t *);
+                int (*bread_old) (BIO *, char *, int);
+                int (*bputs) (BIO *, const char *);
+                int (*bgets) (BIO *, char *, int);
+                long (*ctrl) (BIO *, int, long, void *);
+                int (*create) (BIO *);
+                int (*destroy) (BIO *);
+                long (*callback_ctrl) (BIO *, int, BIO_info_cb *);
+            };
+
+            my_bio_st *bio = (my_bio_st *)OPENSSL_zalloc(sizeof(my_bio_st));
+            if (bio == NULL)
+            {
+                printf("ERR_raise(ERR_LIB_BIO, ERR_R_MALLOC_FAILURE);\n");
+            }
+            else
+            {
+                printf("OPENSSL_zalloc\n");
+            }
+            const my_bio_method_st * method = (const my_bio_method_st *)BIO_s_file();
+            bio->libctx = nullptr;
+            bio->method = (const BIO_METHOD *)method;
+            bio->shutdown = 1;
+            bio->references = 1;
+            if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_BIO, bio, &bio->ex_data))
+            {
+                printf("!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_BIO, bio, &bio->ex_data)\n");
+            }
+            bio->lock = CRYPTO_THREAD_lock_new();
+            if (bio->lock == NULL)
+            {
+                printf("ERR_raise(ERR_LIB_BIO, ERR_R_MALLOC_FAILURE);\n");
+            }
+            else
+            {
+                printf("bio->lock = CRYPTO_THREAD_lock_new();\n");
+            }
+
+            if (method->create != NULL)
+            {
+                printf("method->create != NULL\n");
+                if (method->create((BIO *)bio) == 0)
+                {
+                    printf("!method->create(bio)\n");
+                    printf("ERR_raise(ERR_LIB_BIO, ERR_R_INIT_FAIL);\n");
+                }
+                else
+                {
+                    printf("success\n");
+                }
+            }
+            else
+            {
+                printf("success\n");
+            }
+            if (method->create == NULL)
+            {
+                bio->init = 1;
+            }
+        }
         tr_logAddWarn(fmt::format("BIO_s_file() ERROR!!!"));
         // ERR_print_errors_fp(stdout);
         printf("------------------------------\n");
