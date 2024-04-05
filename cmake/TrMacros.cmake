@@ -238,7 +238,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
         endif()
         target_link_libraries(${_TAEAL_ARG_TARGET}
             INTERFACE
-                ${${ID}_LINK_LIBS})
+                ${${ID}_BUILD_LIBS})
         message(STATUS "------------------------${ID}_BUILD_LIBS: ${${ID}_BUILD_LIBS}")
         message(STATUS "------------------------${ID}_LINK_LIBS: ${${ID}_LINK_LIBS}")
 
