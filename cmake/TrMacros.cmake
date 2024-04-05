@@ -159,10 +159,10 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
         list(APPEND ${ID}_BUILD_LIBS ${${ID}_LIBRARY})
         if(_TAEAL_ARG_EXTRA_LIB)
             foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
-                list(APPEND ${ID}_BUILD_LIBS "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+                list(APPEND ${ID}_LIBRARY "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
             endforeach()
         endif()
-        message(STATUS "------------------------${ID}_BUILD_LIBS: ${${ID}_BUILD_LIBS}")
+        message(STATUS "------------------------${ID}_LIBRARY: ${${ID}_LIBRARY}")
  
         set(${ID}_INCLUDE_DIRS ${${ID}_INCLUDE_DIR})
         set(${ID}_LIBRARIES ${${ID}_LIBRARY})
@@ -212,7 +212,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
                 ${${ID}_EXT_PROJ_CMAKE_ARGS}
                 ${_TAEAL_ARG_CMAKE_ARGS}
             BUILD_BYPRODUCTS
-                ${${ID}_BUILD_LIBS})
+                ${${ID}_LIBRARY})
 
         set_property(TARGET ${${ID}_UPSTREAM_TARGET} PROPERTY FOLDER "${TR_THIRD_PARTY_DIR_NAME}")
 
@@ -238,7 +238,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
         endif()
         target_link_libraries(${_TAEAL_ARG_TARGET}
             INTERFACE
-                ${${ID}_BUILD_LIBS})
+                ${${ID}_LINK_LIBS})
         message(STATUS "------------------------${ID}_BUILD_LIBS: ${${ID}_BUILD_LIBS}")
         message(STATUS "------------------------${ID}_LINK_LIBS: ${${ID}_LINK_LIBS}")
 
