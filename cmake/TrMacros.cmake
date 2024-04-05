@@ -162,6 +162,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
                 list(APPEND ${ID}_BUILD_LIBS "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
             endforeach()
         endif()
+        message(STATUS "------------------------${ID}_BUILD_LIBS: ${${ID}_BUILD_LIBS}")
  
         set(${ID}_INCLUDE_DIRS ${${ID}_INCLUDE_DIR})
         set(${ID}_LIBRARIES ${${ID}_LIBRARY})
@@ -238,7 +239,8 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
         target_link_libraries(${_TAEAL_ARG_TARGET}
             INTERFACE
                 ${${ID}_LINK_LIBS})
-
+        message(STATUS "------------------------${ID}_BUILD_LIBS: ${${ID}_BUILD_LIBS}")
+        message(STATUS "------------------------${ID}_LINK_LIBS: ${${ID}_LINK_LIBS}")
 
         if(${ID}_UPSTREAM_TARGET)
             add_dependencies(${_TAEAL_ARG_TARGET} ${${ID}_UPSTREAM_TARGET})

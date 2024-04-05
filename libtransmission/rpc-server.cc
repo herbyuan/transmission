@@ -679,7 +679,6 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     passwd_callback = SSL_CTX_get_default_passwd_cb(ctx);
     passwd_callback_userdata = SSL_CTX_get_default_passwd_cb_userdata(ctx);
 
-
     in = BIO_new(BIO_s_mem());
     if (in == nullptr)
     {
@@ -713,8 +712,6 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
     //     BIO_free(in);
     //     return ret;
     // }
-
-
 
     OSSL_LIB_CTX* libctx = nullptr;
     char const* propq = nullptr;
