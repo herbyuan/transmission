@@ -729,6 +729,26 @@ int tr_SSL_CTX_use_certificate_chain_file(SSL_CTX* ctx, char const* file)
         char err_msg[256];
         ERR_error_string_n(err, err_msg, sizeof(err_msg));
         printf("Error creating BIO: %s\n", err_msg);
+        printf("err:[%ld] \n", err);
+    
+        const char* pLib = ERR_lib_error_string(err);
+        printf("lib:[%s] \n", pLib);
+        const char* pFunc = ERR_func_error_string(err);
+        printf("func:[%s] \n", pFunc);
+        const char* pReason = ERR_reason_error_string(err);
+        printf("reason:[%s] \n", pReason);
+
+        char sBuf[128] = {0};
+        char* pErrStr = ERR_error_string(err, sBuf);
+        printf("errstr:[%s] \n", pErrStr);
+
+        char* pFile = NULL;
+        int nLine = 0;
+        char* pData = NULL;
+        int nFlags = 0;
+        err = ERR_get_error_line_data((const char**)&pFile, &nLine, (const char**)&pData, &nFlags);
+        printf("err:[%ld] file:[%s] line:[%d] data:[%s] flags:[%08x] \n", err, pFile, nLine, pData, nFlags);
+
         ERR_raise(ERR_LIB_SSL, ERR_R_BUF_LIB);
         return ret;
     }
