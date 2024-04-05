@@ -155,14 +155,11 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
         set(${ID}_LIBRARY "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIBNAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
             CACHE INTERNAL "")
 
-        set(${ID}_BUILD_LIBS)
-        list(APPEND ${ID}_BUILD_LIBS ${${ID}_LIBRARY})
         if(_TAEAL_ARG_EXTRA_LIB)
             foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
                 list(APPEND ${ID}_LIBRARY "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
             endforeach()
         endif()
-        message(STATUS "------------------------${ID}_LIBRARY: ${${ID}_LIBRARY}")
  
         set(${ID}_INCLUDE_DIRS ${${ID}_INCLUDE_DIR})
         set(${ID}_LIBRARIES ${${ID}_LIBRARY})
@@ -229,19 +226,9 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
             INTERFACE
                 ${${ID}_INCLUDE_DIRS})
 
-        set(${ID}_LINK_LIBS)
-        list(APPEND ${ID}_LINK_LIBS ${${ID}_LIBRARIES})
-        if(_TAEAL_ARG_EXTRA_LIB)
-            foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
-                list(APPEND ${ID}_LINK_LIBS "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
-                list(APPEND ${ID}_LIBRARIES "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
-            endforeach()
-        endif()
         target_link_libraries(${_TAEAL_ARG_TARGET}
             INTERFACE
                 ${${ID}_LIBRARIES})
-        message(STATUS "------------------------${ID}_BUILD_LIBS: ${${ID}_BUILD_LIBS}")
-        message(STATUS "------------------------${ID}_LINK_LIBS: ${${ID}_LINK_LIBS}")
 
         if(${ID}_UPSTREAM_TARGET)
             add_dependencies(${_TAEAL_ARG_TARGET} ${${ID}_UPSTREAM_TARGET})
