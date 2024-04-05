@@ -234,11 +234,12 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
         if(_TAEAL_ARG_EXTRA_LIB)
             foreach(LIB IN LISTS _TAEAL_ARG_EXTRA_LIB)
                 list(APPEND ${ID}_LINK_LIBS "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+                list(APPEND ${ID}_LIBRARIES "${${ID}_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${LIB}${CMAKE_STATIC_LIBRARY_SUFFIX}")
             endforeach()
         endif()
         target_link_libraries(${_TAEAL_ARG_TARGET}
             INTERFACE
-                ${${ID}_LINK_LIBS})
+                ${${ID}_LIBRARIES})
         message(STATUS "------------------------${ID}_BUILD_LIBS: ${${ID}_BUILD_LIBS}")
         message(STATUS "------------------------${ID}_LINK_LIBS: ${${ID}_LINK_LIBS}")
 
