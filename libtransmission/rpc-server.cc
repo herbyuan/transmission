@@ -837,7 +837,7 @@ SSL_CTX* tr_set_cert(char const* cert, char const* key)
         tr_logAddWarn(fmt::format("Couldn't set RPC SSL with cert file {}", cert));
         return nullptr;
     }
-    if (SSL_CTX_use_PrivateKey_PEM(m_ctx, key) != 1)
+    if (SSL_CTX_use_PrivateKey_file(m_ctx, key, SSL_FILETYPE_PEM) != 1)
     {
         tr_logAddWarn(fmt::format("Couldn't set RPC SSL with key file {}", key));
         return nullptr;
