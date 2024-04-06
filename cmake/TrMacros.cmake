@@ -208,8 +208,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
                 "-DCMAKE_INSTALL_LIBDIR:STRING=lib"
                 ${${ID}_EXT_PROJ_CMAKE_ARGS}
                 ${_TAEAL_ARG_CMAKE_ARGS}
-            BUILD_BYPRODUCTS
-                ${${ID}_LIBRARY})
+            BUILD_BYPRODUCTS "${${ID}_LIBRARY}")
 
         set_property(TARGET ${${ID}_UPSTREAM_TARGET} PROPERTY FOLDER "${TR_THIRD_PARTY_DIR_NAME}")
 
@@ -218,9 +217,7 @@ macro(tr_add_external_auto_library ID DIRNAME LIBNAME)
     endif()
 
     if(_TAEAL_ARG_TARGET AND (USE_SYSTEM_${ID} OR NOT _TAEAL_ARG_SUBPROJECT))
-        if (NOT TARGET ${_TAEAL_ARG_TARGET})
-            add_library(${_TAEAL_ARG_TARGET} INTERFACE IMPORTED)
-        endif()
+        add_library(${_TAEAL_ARG_TARGET} INTERFACE IMPORTED)
 
         target_include_directories(${_TAEAL_ARG_TARGET}
             INTERFACE
