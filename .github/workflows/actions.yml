@@ -534,6 +534,7 @@ jobs:
       - name: Package
         if: ${{ needs.what-to-make.outputs.make-dist == 'true' || (needs.what-to-make.outputs.make-daemon == 'true' && needs.what-to-make.outputs.make-qt == 'true') }}
         run: |
+          wix --version
           Import-VisualStudioVars -VisualStudioVersion 2022 -Architecture ${{ matrix.arch }}
           cmake --build obj --config RelWithDebInfo --target pack-msi
       - uses: actions/upload-artifact@v4
