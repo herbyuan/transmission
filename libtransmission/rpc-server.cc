@@ -648,32 +648,32 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
 struct bufferevent* bevcb(struct event_base* base, void* arg)
 {
     struct bufferevent* r = nullptr;
-    auto ctx = reinterpret_cast<SSL_CTX*>(arg);
-    r = bufferevent_openssl_socket_new(base, -1, SSL_new(ctx), BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
+    auto ssl = reinterpret_cast<SSL*>(arg);
+    r = bufferevent_openssl_socket_new(base, -1, ssl, BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
     return r;
 }
 
-SSL_CTX* tr_set_cert(char const* cert, char const* key)
+SSL_CTX* create_ctx_with_cert(char const* cert, char const* key)
 {
-    SSL_CTX* m_ctx = SSL_CTX_new(TLS_server_method());
-    if (m_ctx == nullptr)
+    SSL_CTX* ctx = SSL_CTX_new(TLS_server_method());
+    if (ctx == nullptr)
     {
         return nullptr;
     }
-    if (SSL_CTX_use_certificate_chain_file(m_ctx, cert) != 1)
+    if (SSL_CTX_use_certificate_chain_file(ctx, cert) != 1)
     {
         tr_logAddWarn(fmt::format("Couldn't set RPC SSL with cert file {}", cert));
         return nullptr;
     }
-    if (SSL_CTX_use_PrivateKey_file(m_ctx, key, SSL_FILETYPE_PEM) != 1)
+    if (SSL_CTX_use_PrivateKey_file(ctx, key, SSL_FILETYPE_PEM) != 1)
     {
         tr_logAddWarn(fmt::format("Couldn't set RPC SSL with key file {}", key));
         return nullptr;
     }
-    if (SSL_CTX_check_private_key(m_ctx) == 1)
+    if (SSL_CTX_check_private_key(ctx) == 1)
     {
         tr_logAddInfo(fmt::format("Set RPC SSL certs success"));
-        return m_ctx;
+        return ctx;
     }
     return nullptr;
 }
@@ -695,15 +695,7 @@ void start_server(tr_rpc_server* server)
     auto const port = server->port();
 
 #ifdef WITH_LIBEVENT_OPENSSL
-    SSL_CTX* m_ctx = nullptr;
-    if (server->is_ssl_enabled())
-    {
-        m_ctx = tr_set_cert(server->ssl_cert().c_str(), server->ssl_key().c_str());
-        if (m_ctx == nullptr)
-        {
-            tr_logAddWarn(fmt::format("Couldn't set RPC SSL certs"));
-        }
-    }
+
 #endif
 
     bool const success = server->bind_address_->is_unix_addr() ?
@@ -735,9 +727,19 @@ void start_server(tr_rpc_server* server)
     else
     {
 #ifdef WITH_LIBEVENT_OPENSSL
-        if (m_ctx != nullptr)
+        SSL_CTX* ctx = nullptr;
+        if (server->is_ssl_enabled())
         {
-            evhttp_set_bevcb(httpd, bevcb, m_ctx);
+            ctx = create_ctx_with_cert(server->ssl_cert().c_str(), server->ssl_key().c_str());
+            if (ctx == nullptr)
+            {
+                tr_logAddWarn(fmt::format("Couldn't set RPC SSL certs"));
+            }
+        }
+        if (ctx != nullptr)
+        {
+            SSL* ssl = SSL_new(ctx);
+            evhttp_set_bevcb(httpd, bevcb, ssl);
         }
 #endif
         evhttp_set_gencb(httpd, handle_request, server);
