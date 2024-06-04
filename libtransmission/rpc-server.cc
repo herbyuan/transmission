@@ -649,7 +649,8 @@ struct bufferevent* SSL_bufferevent_cb(struct event_base* base, void* arg)
 {
     struct bufferevent* r = nullptr;
     SSL_CTX* ctx = reinterpret_cast<SSL_CTX*>(arg);
-    r = bufferevent_openssl_socket_new(base, -1, SSL_new(ctx), BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
+    SSL* ssl = SSL_new(ctx);
+    r = bufferevent_openssl_socket_new(base, -1, ssl, BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
     return r;
 }
 
