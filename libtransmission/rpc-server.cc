@@ -648,7 +648,7 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
 struct bufferevent* bevcb(struct event_base* base, void* arg)
 {
     struct bufferevent* r = nullptr;
-    auto ssl = reinterpret_cast<SSL*>(arg);
+    SSL* ssl = reinterpret_cast<SSL*>(arg);
     r = bufferevent_openssl_socket_new(base, -1, ssl, BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
     return r;
 }
@@ -663,11 +663,13 @@ SSL_CTX* create_ctx_with_cert(char const* cert, char const* key)
     if (SSL_CTX_use_certificate_chain_file(ctx, cert) != 1)
     {
         tr_logAddWarn(fmt::format("Couldn't set RPC SSL with cert file {}", cert));
+        SSL_CTX_free(ctx);
         return nullptr;
     }
     if (SSL_CTX_use_PrivateKey_file(ctx, key, SSL_FILETYPE_PEM) != 1)
     {
         tr_logAddWarn(fmt::format("Couldn't set RPC SSL with key file {}", key));
+        SSL_CTX_free(ctx);
         return nullptr;
     }
     if (SSL_CTX_check_private_key(ctx) == 1)
@@ -675,6 +677,7 @@ SSL_CTX* create_ctx_with_cert(char const* cert, char const* key)
         tr_logAddInfo(fmt::format("Set RPC SSL certs success"));
         return ctx;
     }
+    SSL_CTX_free(ctx);
     return nullptr;
 }
 #endif
@@ -741,6 +744,8 @@ void start_server(tr_rpc_server* server)
             SSL* ssl = SSL_new(ctx);
             evhttp_set_bevcb(httpd, bevcb, ssl);
         }
+        server->ssl = ssl;
+        server->ctx = ctx;
 #endif
         evhttp_set_gencb(httpd, handle_request, server);
         server->httpd.reset(httpd);
