@@ -648,8 +648,8 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
 struct bufferevent* SSL_bufferevent_cb(struct event_base* base, void* arg)
 {
     struct bufferevent* r = nullptr;
-    SSL* ssl = reinterpret_cast<SSL*>(arg);
-    r = bufferevent_openssl_socket_new(base, -1, ssl, BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
+    SSL_CTX* ctx = reinterpret_cast<SSL_CTX*>(arg);
+    r = bufferevent_openssl_socket_new(base, -1, SSL_new(ctx), BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
     return r;
 }
 
@@ -742,12 +742,16 @@ void start_server(tr_rpc_server* server)
         }
         if (ctx != nullptr)
         {
-            ssl = SSL_new(ctx);
+            evhttp_set_bevcb(httpd, SSL_bufferevent_cb, ctx);
         }
-        if (ssl != nullptr)
-        {
-            evhttp_set_bevcb(httpd, SSL_bufferevent_cb, ssl);
-        }
+        // if (ctx != nullptr)
+        // {
+        //     ssl = SSL_new(ctx);
+        // }
+        // if (ssl != nullptr)
+        // {
+        //     evhttp_set_bevcb(httpd, SSL_bufferevent_cb, ssl);
+        // }
         server->ssl = ssl;
         server->ctx = ctx;
 #endif
@@ -767,11 +771,11 @@ void stop_server(tr_rpc_server* server)
     rpc_server_start_retry_cancel(server);
 
 #ifdef WITH_LIBEVENT_OPENSSL
-    if (!server->ssl)
-    {
-        SSL_free(server->ssl);
-        server->ssl = nullptr;
-    }
+    // if (!server->ssl)
+    // {
+    //     SSL_free(server->ssl);
+    //     server->ssl = nullptr;
+    // }
     if (!server->ctx)
     {
         SSL_CTX_free(server->ctx);
