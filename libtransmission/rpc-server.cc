@@ -769,13 +769,13 @@ void stop_server(tr_rpc_server* server)
 #ifdef WITH_LIBEVENT_OPENSSL
     if (!server->ssl)
     {
-        SSL_free(ssl);
-        ssl = nullptr;
+        SSL_free(server->ssl);
+        server->ssl = nullptr;
     }
     if (!server->ctx)
     {
-        SSL_CTX_free(ctx);
-        ctx = nullptr;
+        SSL_CTX_free(server->ctx);
+        server->ctx = nullptr;
     }
 #endif
 
