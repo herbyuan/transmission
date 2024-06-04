@@ -230,7 +230,7 @@ public:
     size_t login_attempts_ = 0U;
     int start_retry_counter = 0;
 #ifdef WITH_LIBEVENT_OPENSSL
-    SSL_CTX* ctx;
-    SSL* ssl;
+    SSL_CTX* ctx = nullptr;
+    SSL* ssl = nullptr;
 #endif
 };

@@ -645,7 +645,7 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
 }
 
 #ifdef WITH_LIBEVENT_OPENSSL
-struct bufferevent* bevcb(struct event_base* base, void* arg)
+struct bufferevent* SSL_bufferevent_cb(struct event_base* base, void* arg)
 {
     struct bufferevent* r = nullptr;
     SSL* ssl = reinterpret_cast<SSL*>(arg);
@@ -746,7 +746,7 @@ void start_server(tr_rpc_server* server)
         }
         if (ssl != nullptr)
         {
-            evhttp_set_bevcb(httpd, bevcb, ssl);
+            evhttp_set_bevcb(httpd, SSL_bufferevent_cb, ssl);
         }
         server->ssl = ssl;
         server->ctx = ctx;
@@ -765,6 +765,19 @@ void stop_server(tr_rpc_server* server)
     auto const lock = server->session->unique_lock();
 
     rpc_server_start_retry_cancel(server);
+
+#ifdef WITH_LIBEVENT_OPENSSL
+    if (!server->ssl)
+    {
+        SSL_free(ssl);
+        ssl = nullptr;
+    }
+    if (!server->ctx)
+    {
+        SSL_CTX_free(ctx);
+        ctx = nullptr;
+    }
+#endif
 
     auto& httpd = server->httpd;
     if (!httpd)
