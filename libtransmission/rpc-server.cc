@@ -731,6 +731,7 @@ void start_server(tr_rpc_server* server)
     {
 #ifdef WITH_LIBEVENT_OPENSSL
         SSL_CTX* ctx = nullptr;
+        SSL* ssl = nullptr;
         if (server->is_ssl_enabled())
         {
             ctx = create_ctx_with_cert(server->ssl_cert().c_str(), server->ssl_key().c_str());
@@ -741,7 +742,10 @@ void start_server(tr_rpc_server* server)
         }
         if (ctx != nullptr)
         {
-            SSL* ssl = SSL_new(ctx);
+            ssl = SSL_new(ctx);
+        }
+        if (ssl != nullptr)
+        {
             evhttp_set_bevcb(httpd, bevcb, ssl);
         }
         server->ssl = ssl;
