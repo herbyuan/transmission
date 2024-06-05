@@ -12,6 +12,20 @@ if(UNIX)
     pkg_check_modules(_EVENT2 QUIET libevent)
     pkg_check_modules(_EVENT2_OPENSSL QUIET libevent_openssl)
     message(STATUS "=========================event2_openssl: ${_EVENT2_OPENSSL_INCLUDE_DIR}  ${_EVENT2_OPENSSL_LIBRARY}=========================")
+    # 查找 libevent_openssl 库
+    find_library(LIBEVENT_OPENSSL_LIBRARY
+        NAMES libevent_openssl.so
+        HINTS ${_EVENT2_LIBDIR}
+    )
+
+    # 判断是否找到 libevent_openssl 库
+    if(LIBEVENT_OPENSSL_LIBRARY)
+        message("libevent_openssl library found at: ${LIBEVENT_OPENSSL_LIBRARY}")
+        # 在这里可以添加您的逻辑，比如设置编译定义或链接库
+    else()
+        message("libevent_openssl library not found")
+        # 在这里可以添加处理库未找到的逻辑
+    endif()
 endif()
 
 find_path(EVENT2_INCLUDE_DIR
@@ -21,6 +35,7 @@ find_library(EVENT2_LIBRARY
     NAMES
         event-2.1
         event
+        event_openssl
     HINTS ${_EVENT2_LIBDIR})
 
 if(EVENT2_INCLUDE_DIR)
