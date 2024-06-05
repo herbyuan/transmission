@@ -493,7 +493,6 @@ tr_add_external_auto_library(DEFLATE libdeflate ${DEFLATE_LIB_NAME}
         -DLIBDEFLATE_BUILD_GZIP=OFF)
 
 if(CRYPTO_PKG STREQUAL "openssl")
-    add_compile_definitions(WITH_LIBEVENT_OPENSSL)
     tr_add_external_auto_library(EVENT2 libevent event
         TARGET libevent::event
         EXTRA_LIBS event_openssl
@@ -520,6 +519,9 @@ else()
             -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 endif()
 
+if (${EVENT2_LIBRARY} MATCHES ".*event_openssl.*")
+    add_compile_definitions(WITH_LIBEVENT_OPENSSL)
+endif()
 message(STATUS "=========================event2: ${EVENT2_INCLUDE_DIR}  ${EVENT2_LIBRARY}=========================")
 
 tr_add_external_auto_library(NATPMP libnatpmp natpmp
