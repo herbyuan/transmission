@@ -10,6 +10,8 @@ endif()
 if(UNIX)
     find_package(PkgConfig QUIET)
     pkg_check_modules(_EVENT2 QUIET libevent)
+    pkg_check_modules(_EVENT2_OPENSSL QUIET libevent_openssl)
+    message(STATUS "=========================event2_openssl: ${_EVENT2_OPENSSL_INCLUDE_DIR}  ${_EVENT2_OPENSSL_LIBRARY}=========================")
 endif()
 
 find_path(EVENT2_INCLUDE_DIR
