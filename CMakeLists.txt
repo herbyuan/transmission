@@ -72,7 +72,7 @@ option(INSTALL_DOC "Build/install documentation" ON)
 option(INSTALL_LIB "Install the library" OFF)
 tr_auto_option(ENABLE_DEPRECATED "Allow deprecated API use of upstream packages, e.g. GTK" AUTO)
 tr_auto_option(RUN_CLANG_TIDY "Run clang-tidy on the code" OFF)
-tr_auto_option(USE_SYSTEM_EVENT2 "Use system event2 library" ON)
+tr_auto_option(USE_SYSTEM_EVENT2 "Use system event2 library" AUTO)
 tr_auto_option(USE_SYSTEM_DEFLATE "Use system deflate library" AUTO)
 tr_auto_option(USE_SYSTEM_DHT "Use system dht library" AUTO)
 tr_auto_option(USE_SYSTEM_MINIUPNPC "Use system miniupnpc library" AUTO)
@@ -519,6 +519,8 @@ else()
             -DEVENT__DISABLE_SAMPLES:BOOL=ON
             -DEVENT__LIBRARY_TYPE:STRING=STATIC)
 endif()
+
+message(STATUS "=========================event2: ${EVENT2_INCLUDE_DIR}  ${EVENT2_LIBRARY}=========================")
 
 tr_add_external_auto_library(NATPMP libnatpmp natpmp
     TARGET natpmp::natpmp)
