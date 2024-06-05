@@ -47,7 +47,17 @@ endif()
 
 message("==========${EVENT2_LIBRARY}")
 if(LIBEVENT_OPENSSL_LIBRARY)
-    list(APPEND ${EVENT2_LIBRARY} ${LIBEVENT_OPENSSL_LIBRARY})
+    # 添加新的路径到现有列表中
+    list(APPEND EVENT2_LIBRARY LIBEVENT_OPENSSL_LIBRARY)
+
+    # 打印更新后的列表
+    message("Updated EVENT2_LIBRARY: ${EVENT2_LIBRARY}")
+
+    # 遍历更新后的列表
+    foreach(LIB ${EVENT2_LIBRARY})
+        message("Library path: ${LIB}")
+        # 在这里执行您的逻辑
+    endforeach()
 endif()
 message("==========${EVENT2_LIBRARY}")
 
