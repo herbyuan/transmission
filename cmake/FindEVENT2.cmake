@@ -21,7 +21,7 @@ find_library(EVENT2_LIBRARY
         event
     HINTS ${_EVENT2_LIBDIR})
 find_library(LIBEVENT_OPENSSL_LIBRARY
-    NAMES libevent_openssl
+    NAMES event_openssl
     HINTS ${_EVENT2_LIBDIR})
 
 if(EVENT2_INCLUDE_DIR)
@@ -36,9 +36,20 @@ if(EVENT2_INCLUDE_DIR)
     endif()
 endif()
 
+# 判断是否找到 libevent_openssl 库
 if(LIBEVENT_OPENSSL_LIBRARY)
-    list(APPEND EVENT2_LIBRARY ${LIBEVENT_OPENSSL_LIBRARY})
+    message("==========libevent_openssl library found at: ${LIBEVENT_OPENSSL_LIBRARY}")
+    # 在这里可以添加您的逻辑，比如设置编译定义或链接库
+else()
+    message("==========libevent_openssl library not found")
+    # 在这里可以添加处理库未找到的逻辑
 endif()
+
+message("==========${EVENT2_LIBRARY}")
+if(LIBEVENT_OPENSSL_LIBRARY)
+    list(APPEND ${EVENT2_LIBRARY} ${LIBEVENT_OPENSSL_LIBRARY})
+endif()
+message("==========${EVENT2_LIBRARY}")
 
 set(EVENT2_INCLUDE_DIRS ${EVENT2_INCLUDE_DIR})
 set(EVENT2_LIBRARIES ${EVENT2_LIBRARY})
