@@ -522,6 +522,7 @@ endif()
 foreach(LIB_PATH ${EVENT2_LIBRARY})
     if (${LIB_PATH} MATCHES ".*event_openssl.*")
         add_compile_definitions(WITH_LIBEVENT_OPENSSL)
+        message("=======compile with libevent_openssl=========")
     endif()
 endforeach()
 
