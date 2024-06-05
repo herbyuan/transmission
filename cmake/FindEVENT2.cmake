@@ -20,9 +20,15 @@ find_library(EVENT2_LIBRARY
         event-2.1
         event
     HINTS ${_EVENT2_LIBDIR})
-find_library(LIBEVENT_OPENSSL_LIBRARY
-    NAMES event_openssl
-    HINTS ${_EVENT2_LIBDIR})
+
+if(CRYPTO_PKG STREQUAL "openssl")
+    find_library(LIBEVENT_OPENSSL_LIBRARY
+        NAMES event_openssl
+        HINTS ${_EVENT2_LIBDIR})
+    if(LIBEVENT_OPENSSL_LIBRARY)
+        list(APPEND EVENT2_LIBRARY ${LIBEVENT_OPENSSL_LIBRARY})
+    endif()
+endif()
 
 if(EVENT2_INCLUDE_DIR)
     if(_EVENT2_VERSION)
@@ -35,11 +41,6 @@ if(EVENT2_INCLUDE_DIR)
         endif()
     endif()
 endif()
-
-if(LIBEVENT_OPENSSL_LIBRARY)
-    list(APPEND EVENT2_LIBRARY ${LIBEVENT_OPENSSL_LIBRARY})
-endif()
-message("==========cypto: ${CRYPTO_PKG}")
 
 set(EVENT2_INCLUDE_DIRS ${EVENT2_INCLUDE_DIR})
 set(EVENT2_LIBRARIES ${EVENT2_LIBRARY})
