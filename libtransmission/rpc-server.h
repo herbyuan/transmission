@@ -231,6 +231,5 @@ public:
     int start_retry_counter = 0;
 #ifdef WITH_LIBEVENT_OPENSSL
     SSL_CTX* ctx = nullptr;
-    SSL* ssl = nullptr;
 #endif
 };

@@ -645,14 +645,12 @@ void rpc_server_start_retry_cancel(tr_rpc_server* server)
 }
 
 #ifdef WITH_LIBEVENT_OPENSSL
-struct bufferevent* SSL_bufferevent_cb(struct event_base* base, void* arg)
+bufferevent* SSL_bufferevent_cb(event_base* base, void* arg)
 {
-    struct bufferevent* r = nullptr;
-    // SSL_CTX* ctx = reinterpret_cast<SSL_CTX*>(arg);
-    // SSL* ssl = SSL_new(ctx);
-    SSL* ssl = reinterpret_cast<SSL*>(arg);
-    r = bufferevent_openssl_socket_new(base, -1, ssl, BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
-    return r;
+    bufferevent* ret = nullptr;
+    SSL_CTX* ctx = static_cast<SSL_CTX*>(arg);
+    ret = bufferevent_openssl_socket_new(base, -1, SSL_new(ctx), BUFFEREVENT_SSL_ACCEPTING, BEV_OPT_CLOSE_ON_FREE);
+    return ret;
 }
 
 SSL_CTX* create_ctx_with_cert(char const* cert, char const* key)
@@ -699,10 +697,6 @@ void start_server(tr_rpc_server* server)
     auto const address = server->get_bind_address();
     auto const port = server->port();
 
-#ifdef WITH_LIBEVENT_OPENSSL
-
-#endif
-
     bool const success = server->bind_address_->is_unix_addr() ?
         bindUnixSocket(base, httpd, address.c_str(), server->settings().socket_mode) :
         (evhttp_bind_socket(httpd, address.c_str(), port.host()) != -1);
@@ -733,7 +727,6 @@ void start_server(tr_rpc_server* server)
     {
 #ifdef WITH_LIBEVENT_OPENSSL
         SSL_CTX* ctx = nullptr;
-        SSL* ssl = nullptr;
         if (server->is_ssl_enabled())
         {
             ctx = create_ctx_with_cert(server->ssl_cert().c_str(), server->ssl_key().c_str());
@@ -746,15 +739,6 @@ void start_server(tr_rpc_server* server)
         {
             evhttp_set_bevcb(httpd, SSL_bufferevent_cb, ctx);
         }
-        if (ctx != nullptr)
-        {
-            ssl = SSL_new(ctx);
-        }
-        if (ssl != nullptr)
-        {
-            evhttp_set_bevcb(httpd, SSL_bufferevent_cb, ssl);
-        }
-        server->ssl = ssl;
         server->ctx = ctx;
 #endif
         evhttp_set_gencb(httpd, handle_request, server);
@@ -773,12 +757,7 @@ void stop_server(tr_rpc_server* server)
     rpc_server_start_retry_cancel(server);
 
 #ifdef WITH_LIBEVENT_OPENSSL
-    // if (!server->ssl)
-    // {
-    //     SSL_free(server->ssl);
-    //     server->ssl = nullptr;
-    // }
-    if (!server->ctx)
+    if (server->ctx != nullptr)
     {
         SSL_CTX_free(server->ctx);
         server->ctx = nullptr;
