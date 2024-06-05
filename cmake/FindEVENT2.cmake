@@ -48,7 +48,7 @@ endif()
 message("==========${EVENT2_LIBRARY}")
 if(LIBEVENT_OPENSSL_LIBRARY)
     # 添加新的路径到现有列表中
-    list(APPEND EVENT2_LIBRARY LIBEVENT_OPENSSL_LIBRARY)
+    list(APPEND EVENT2_LIBRARY ${LIBEVENT_OPENSSL_LIBRARY})
 
     # 打印更新后的列表
     message("Updated EVENT2_LIBRARY: ${EVENT2_LIBRARY}")
