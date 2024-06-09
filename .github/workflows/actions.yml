@@ -543,6 +543,10 @@ jobs:
         with:
           name: binaries-${{ github.job }}-${{ matrix.arch }}-msi
           path: obj/dist/msi/*.msi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ github.job }}-${{ matrix.arch }}-deps
+          path: D:/x64-prefix/*
 
   make-source-tarball:
     runs-on: ubuntu-22.04
