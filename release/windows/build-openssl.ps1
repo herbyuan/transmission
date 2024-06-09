@@ -25,6 +25,7 @@ function global:Build-OpenSsl([string] $PrefixDir, [string] $Arch, [string] $Dep
         'no-engine'
         'no-external-tests'
         'no-hw'
+        'no-stdio'
         'no-tests'
     )
 
