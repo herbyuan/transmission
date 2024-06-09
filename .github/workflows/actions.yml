@@ -521,6 +521,12 @@ jobs:
             -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} `
             -DENABLE_WERROR=ON `
             -DRUN_CLANG_TIDY=OFF
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ github.job }}-${{ matrix.arch }}-deps
+          path: D:/x64-prefix/*
+          
       - name: Make
         run: |
           Import-VisualStudioVars -VisualStudioVersion 2022 -Architecture ${{ matrix.arch }}
@@ -543,10 +549,7 @@ jobs:
         with:
           name: binaries-${{ github.job }}-${{ matrix.arch }}-msi
           path: obj/dist/msi/*.msi
-      - uses: actions/upload-artifact@v4
-        with:
-          name: binaries-${{ github.job }}-${{ matrix.arch }}-deps
-          path: D:/x64-prefix/*
+      
 
   make-source-tarball:
     runs-on: ubuntu-22.04
